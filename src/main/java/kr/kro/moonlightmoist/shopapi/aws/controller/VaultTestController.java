@@ -23,7 +23,7 @@ public class VaultTestController {
     @Autowired
     private S3Config s3Config;
 
-    @Value("${aws.s3.region}")
+//    @Value("${aws.s3.region}")
     private String region;
 
     @GetMapping("/api/vault")
