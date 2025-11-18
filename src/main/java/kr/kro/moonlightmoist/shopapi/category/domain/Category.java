@@ -1,6 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.category.domain;
 
 import jakarta.persistence.*;
+import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @Table(name = "categories")
-public class Category {
+public class Category extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +34,6 @@ public class Category {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 
     public void changeName(String name) {
         this.name = name;

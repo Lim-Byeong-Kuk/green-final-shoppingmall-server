@@ -25,19 +25,19 @@ import java.util.UUID;
                 org.springframework.web.bind.annotation.RequestMethod.OPTIONS})
 public class S3UploadController {
 
-    @Value("${aws.s3.bucket-name}")
+//    @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
-    @Value("${aws.access-key-id}")
+//    @Value("${aws.access-key-id}")
     private String accessKey;
 
-    @Value("${aws.secret-access-key}")
+//    @Value("${aws.secret-access-key}")
     private String secretKey;
 
 //    @Autowired
 //    private S3Config s3Config;
 
-    @Value("${aws.s3.region}")
+//    @Value("${aws.s3.region}")
     private String region;
 
     // S3 클라이언트 생성 (간단한 구현)
