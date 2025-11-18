@@ -23,8 +23,6 @@ public class ProductServiceImpl implements ProductService{
                 .description(dto.getDescription())
                 .cancelable(dto.isCancelable())
                 .deleted(dto.isDeleted())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
