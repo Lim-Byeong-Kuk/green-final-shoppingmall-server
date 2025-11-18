@@ -1,6 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.category.repository;
 
 import kr.kro.moonlightmoist.shopapi.category.domain.Category;
+import kr.kro.moonlightmoist.shopapi.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -133,4 +134,5 @@ class CategoryRepositoryTest {
         assertThat(foundCategory).isPresent();
         assertThat(foundCategory.get().isDeleted()).isTrue();
     }
+
 }

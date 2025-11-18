@@ -1,6 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.product.domain;
 
 import jakarta.persistence.*;
+import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @Table(name = "product_main_images")
-public class ProductMainImage {
+public class ProductMainImage extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +35,5 @@ public class ProductMainImage {
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 }
+
