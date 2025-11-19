@@ -1,10 +1,15 @@
-package kr.kro.moonlightmoist.shopapi.uil;
+package kr.kro.moonlightmoist.shopapi.util;
 
 import kr.kro.moonlightmoist.shopapi.brand.domain.Brand;
 import kr.kro.moonlightmoist.shopapi.category.domain.Category;
 import kr.kro.moonlightmoist.shopapi.product.domain.ExposureStatus;
 import kr.kro.moonlightmoist.shopapi.product.domain.Product;
 import kr.kro.moonlightmoist.shopapi.product.domain.SaleStatus;
+import kr.kro.moonlightmoist.shopapi.user.domain.User;
+import kr.kro.moonlightmoist.shopapi.user.domain.UserGrade;
+import kr.kro.moonlightmoist.shopapi.user.domain.UserRole;
+
+import java.time.LocalDate;
 
 public class EntityFactory {
 
@@ -38,5 +43,35 @@ public class EntityFactory {
                 .deleted(false)
                 .build();
     }
+
+    public static UserGrade createUserGrade () {
+        return UserGrade.builder()
+                .grade("BRONZE")
+                .minTotalPoints(0)
+                .freeDeliveryMinAmount(30000)
+                .description("브론즈는 혜택이 없습니다.")
+                .disCountRate(0)
+                .build();
+    }
+
+
+    public static User createUser (UserGrade userGrade) {
+        return User.builder()
+                .loginId("user")
+                .passwordHash("123123")
+                .name("유저")
+                .email("user@naver.com")
+                .phoneNumber("01012345678")
+                .postalCode("11111")
+                .address("성남")
+                .addressDetail("분당")
+                .birthDate(LocalDate.of(2025,11,11))
+                .emailAgreement(true)
+                .smsAgreement(false)
+                .userGrade(userGrade)
+                .userRole(UserRole.USER)
+                .build();
+    }
+
 
 }
