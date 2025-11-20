@@ -10,13 +10,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CartProductRepository extends JpaRepository<CartProduct,Long> {
-//    @Query(""" select new kr.kro.moonlightmoist.shopapi CartProductListDTO(
-//            c.id, c.quantity,
-//            )
-//            from CartProduct c
-//            join c.cart cc
-//            join c.product cp
-//            where
-//            """)
-    public List<CartProductListDTO> removeCartProductByCartProductDTOId(@Param("id") Long id);
+////    @Query(""" select new kr.kro.moonlightmoist.shopapi CartProductListDTO(
+////            c.id, c.quantity,
+////            )
+////            from CartProduct c
+////            join c.cart cc
+////            join c.product cp
+////            where
+////            """)
+//    public List<CartProductListDTO> removeCartProductByCartProductDTOId(@Param("id") Long id);
 }

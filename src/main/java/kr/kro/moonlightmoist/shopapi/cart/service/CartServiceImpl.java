@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public List<CartProductListDTO> remove(Long id) {
-//        cartProductRepository.removeCartProductById
+        cartProductRepository.deleteById(id);
         return null;
     }
 }
