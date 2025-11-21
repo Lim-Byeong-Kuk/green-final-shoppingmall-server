@@ -1,0 +1,43 @@
+package kr.kro.moonlightmoist.shopapi.category.controller;
+
+import kr.kro.moonlightmoist.shopapi.category.domain.Category;
+import kr.kro.moonlightmoist.shopapi.category.dto.CategoryRegisterReq;
+import kr.kro.moonlightmoist.shopapi.category.dto.CategoryRes;
+import kr.kro.moonlightmoist.shopapi.category.service.CategoryService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/categories")
+@Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*",
+        methods = {org.springframework.web.bind.annotation.RequestMethod.GET,
+                org.springframework.web.bind.annotation.RequestMethod.POST,
+                org.springframework.web.bind.annotation.RequestMethod.PUT,
+                org.springframework.web.bind.annotation.RequestMethod.DELETE,
+                org.springframework.web.bind.annotation.RequestMethod.OPTIONS})
+@RequiredArgsConstructor
+public class CategoryController {
+
+    private final CategoryService categoryService;
+
+    @PostMapping("")
+    public ResponseEntity<String> register(@RequestBody CategoryRegisterReq dto) {
+        System.out.println("dto = " + dto);
+        categoryService.register(dto);
+
+        return ResponseEntity.ok("ok");
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<CategoryRes>> getCategoryList() {
+        List<CategoryRes> categories = categoryService.getCategoryList();
+
+        return ResponseEntity.ok(categories);
+    }
+
+}

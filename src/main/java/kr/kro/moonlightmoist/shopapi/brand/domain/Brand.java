@@ -1,6 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.brand.domain;
 
 import jakarta.persistence.*;
+import kr.kro.moonlightmoist.shopapi.brand.dto.BrandDTO;
 import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
 import lombok.*;
 
@@ -23,7 +24,8 @@ public class Brand extends BaseTimeEntity {
     private String name;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean deleted;
+    @Builder.Default
+    private boolean deleted = false;
 
     public void changeName(String name) {
         this.name = name;
@@ -33,4 +35,11 @@ public class Brand extends BaseTimeEntity {
         this.deleted = true;
     }
 
+    public BrandDTO toDTO() {
+        return BrandDTO.builder()
+                .id(this.id)
+                .name(this.name)
+                .deleted(this.deleted)
+                .build();
+    }
 }

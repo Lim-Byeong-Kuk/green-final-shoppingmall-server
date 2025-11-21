@@ -1,10 +1,12 @@
 package kr.kro.moonlightmoist.shopapi.category.domain;
 
 import jakarta.persistence.*;
+import kr.kro.moonlightmoist.shopapi.category.dto.CategoryRes;
 import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -23,6 +25,10 @@ public class Category extends BaseTimeEntity {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
+    @OneToMany(mappedBy = "parent")
+    @Builder.Default
+    private List<Category> subCategories = new ArrayList<>();
+
     @Column(unique = true, nullable = false)
     private String name;
 
@@ -33,7 +39,8 @@ public class Category extends BaseTimeEntity {
     private int displayOrder;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean deleted;
+    @Builder.Default
+    private boolean deleted = false;
 
     public void changeName(String name) {
         this.name = name;
@@ -45,6 +52,17 @@ public class Category extends BaseTimeEntity {
 
     public void recoverCategory() {
         this.deleted = false;
+    }
+
+//    toDTO 가 subScategories 도 DTO 로 바꿔줘야 함
+    public CategoryRes toDTO() {
+        return CategoryRes.builder()
+                .id(this.id)
+                .subCategories(this.subCategories.stream().map(category -> category.toDTO()).toList())
+                .name(this.name)
+                .depth(this.depth)
+                .displayOrder(this.displayOrder)
+                .build();
     }
 
 }
