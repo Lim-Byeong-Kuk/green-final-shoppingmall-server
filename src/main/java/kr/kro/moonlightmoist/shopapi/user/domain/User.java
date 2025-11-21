@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor // 빌더를 쓰려면 올아그스먼트컨트럭쳐 어노테이션이 필요하다.
 @NoArgsConstructor // JPA Entity는 기본생성자가 필수
+@ToString
 public class User extends BaseTimeEntity {
 
     @Id
@@ -23,13 +24,13 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, unique = true) // not null
     private String loginId;
 
-    @Column(nullable = false) // not null
-    private String passwordHash;
+    @Column(name = "password_Hash", nullable = false) // not null
+    private String password;
 
     @Column(nullable = false) // not null
     private String name;
 
-    @Column(nullable = false, unique = true) // not null
+    @Column(nullable = false, unique = true, length = 11) // not null
     private String phoneNumber;
 
     @Column(nullable = false, unique = true) // not null
@@ -61,13 +62,21 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole userRole;
+    @Builder.Default // 기본값 적용
+    private UserRole userRole = UserRole.USER;
 
     // 여러명의 유저는 회원등급을 가진다.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserGrade userGrade; // 회원 등급
+    @Builder.Default // 기본값 적용
+    private UserGrade userGrade = UserGrade.BRONZE;   // 회원 등급
 
+    
+
+
+
+    
+    // 메서드
     public void updateAddressAndAgreement (String address, String addressDetail, String postalCode, boolean emailAgreement, boolean smsAgreement) {
         this.address = address;
         this.addressDetail = addressDetail;
