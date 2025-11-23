@@ -32,7 +32,7 @@ public interface CartProductRepository extends JpaRepository<CartProduct,Long> {
             join po.product pp
             where cc.id = :cartId
             """)
-    List<CartProductListDTO> getCartProductsByCartId(@Param("cartId") Long cartId);
+    List<CartProductListDTO> getItemsByCartId(@Param("cartId") Long cartId);
 
     @Query("select cp from CartProduct cp where cp.cart.owner.id=:userId and cp.productOption.id=:productOptionId")
     Optional<CartProduct> getItemOfProductOptionIdAndUserId(@Param("userId") Long userId, @Param("productOptionId") Long productOptionId);

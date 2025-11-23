@@ -36,9 +36,9 @@ public class CartServiceImpl implements CartService{
 
         //CartProductDTO에 저장된 userId로 cart 조회
         User user = userRepository.findById(userId).orElseThrow();
-        Cart cart = cartRepository.findByOwner(user);
+        Cart cart = cartRepository.findByOwner(user).orElseThrow();
 
-        // 기존에 장바구니에 있던 상품은 수량만 변경
+        // 장바구니에서 수량 변경할 때는 id가 null이 아니다.
         if(id != null) {
             CartProduct cartProduct = cartProductRepository.findById(id).orElseThrow();
             cartProduct.changeQty(quantity);
@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService{
 
 
         if(id == null) {
-            ProductOption productOption = productOptionRepository.findById(productOptionId).get();
+            ProductOption productOption = productOptionRepository.findById(productOptionId).orElseThrow();
             Optional<CartProduct> foundCartItem = cartProductRepository.getItemOfProductOptionIdAndUserId(userId, productOptionId);
             // 아직 장바구니 상품이 아닌 상품은 장바구니 상품으로 등록
             if(foundCartItem.isEmpty()) {
@@ -59,15 +59,15 @@ public class CartServiceImpl implements CartService{
                         .build();
                 cartProductRepository.save(cartProduct);
             }
-            else {
+            else { //기존에 장바구니에 있던 상품이라면 상품 상세 페이지에서 장바구니에 담은 수량만큼 +한다.
                 CartProduct cartProduct = foundCartItem.get();
                 cartProduct.changeQty(cartProduct.getQuantity() + quantity);
                 cartProductRepository.save(cartProduct);
             }
         }
 
-
-        return cartProductRepository.getCartProductsByCartId(cart.getId());
+        //유저의 장바구니 id로 장바구니 상품 리스트를 반환
+        return cartProductRepository.getItemsByCartId(cart.getId());
     }
 
     @Override
@@ -77,6 +77,26 @@ public class CartServiceImpl implements CartService{
 
         //장바구니 상품 삭제
         cartProductRepository.deleteById(cartProductId);
-        return cartProductRepository.getCartProductsByCartId(cartId);
+        return cartProductRepository.getItemsByCartId(cartId);
     }
+
+    @Override
+    public List<CartProductListDTO> getCartItems(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Optional<Cart> cartOptional = cartRepository.findByOwner(user);
+        if(cartOptional.isEmpty()){
+            System.out.println("id " + userId + "번 회원의 장바구니가 없습니다.");
+            Cart cart = Cart.builder()
+                    .owner(user)
+                    .build();
+            cartRepository.save(cart);
+            return cartProductRepository.getItemsByCartId(cart.getId());
+        }
+        else {
+            Cart cart = cartOptional.get();
+            return cartProductRepository.getItemsByCartId(cart.getId());
+        }
+    }
+
+
 }
