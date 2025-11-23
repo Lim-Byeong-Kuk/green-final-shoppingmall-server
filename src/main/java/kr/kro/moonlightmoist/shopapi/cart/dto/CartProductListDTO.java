@@ -19,7 +19,7 @@ public class CartProductListDTO {
     private int quantity; // 상품 수량
     private String imageUrl; // 상품 대표 이미지 Url
 
-    //JPQL 생성자 프로젝션에서 사용될 "시그니처 고정" 생성자
+    //JPQL 생성자 프로젝션에서 사용될 "시그니처 고정" 생성자     
     public CartProductListDTO(Long id, Long productOptionId, String brandName, String productName, String optionName, int sellingPrice, int quantity, String imageUrl) {
         this.id=id;
         this.productOptionId=productOptionId;

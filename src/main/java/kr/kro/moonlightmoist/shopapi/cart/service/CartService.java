@@ -9,5 +9,8 @@ import java.util.List;
 
 public interface CartService {
     List<CartProductListDTO> addOrModify(CartProductDTO dto);
-    List<CartProductListDTO> remove(Long id);
+    //CartProduct id를 받음
+    List<CartProductListDTO> remove(Long cartProductId);
+    //user id를 받음
+    List<CartProductListDTO> getCartItems(Long userId);
 }

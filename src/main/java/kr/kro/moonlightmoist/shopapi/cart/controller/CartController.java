@@ -25,5 +25,15 @@ public class CartController {
         return cartService.addOrModify(dto);
     }
 
+    @GetMapping("/items")
+    public List<CartProductListDTO> getCartItems(@RequestBody Long userId) {
+        return cartService.getCartItems(userId);
+    }
+
+    @DeleteMapping("/delete")
+    public List<CartProductListDTO> deleteCartItem(@RequestBody Long cartProductId){
+        return cartService.remove(cartProductId);
+    }
+
 
 }
