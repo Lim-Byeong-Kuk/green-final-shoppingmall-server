@@ -11,7 +11,7 @@ public class UserServiceImpl implements UserService {
 
         return User.builder()
                 .loginId(userSignUpRequest.getLoginId())
-                .password(userSignUpRequest.getPasswordHash())
+                .password(userSignUpRequest.getPassword())
                 .name(userSignUpRequest.getName())
                 .phoneNumber(userSignUpRequest.getPhoneNumber())
                 .email(userSignUpRequest.getEmail())

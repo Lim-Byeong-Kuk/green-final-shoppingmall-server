@@ -20,7 +20,7 @@ public class UserSignUpRequest {
 
     @NotBlank(message = "비밀번호는 필수 입니다.")
     @Size(min = 8, message = "비밀번호는 최소 8자 이상이어야 합니다.")
-    private String passwordHash; // 비밀번호
+    private String password; // 비밀번호
 
     @NotBlank(message = "이름은 필수 입니다.")
     private String name; // 사용자 이름

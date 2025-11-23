@@ -63,7 +63,7 @@ public class ReviewServiceImpl implements ReviewService {
         UserRole userRole = UserRole.USER;
         User user = User.builder()
                 .loginId("user1234")
-                .passwordHash("1234")
+                .password("1234")
                 .name("user")
                 .phoneNumber("012-3456-7890")
                 .email("a@aaa.com")
