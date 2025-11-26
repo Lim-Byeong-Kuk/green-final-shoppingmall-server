@@ -2,11 +2,13 @@ package kr.kro.moonlightmoist.shopapi.review.controller;
 
 import kr.kro.moonlightmoist.shopapi.review.domain.Review;
 import kr.kro.moonlightmoist.shopapi.review.dto.ReviewDTO;
+import kr.kro.moonlightmoist.shopapi.review.repository.ReviewRepository;
 import kr.kro.moonlightmoist.shopapi.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173")
 public class ReviewController {
 
+    private final ReviewRepository reviewRepository;
     private final ReviewService reviewService;
 
     @GetMapping("/product/{productId}")
@@ -64,6 +67,35 @@ public class ReviewController {
     public Map<String,String> remove(@PathVariable("reviewId") Long reviewId){
         reviewService.remove(reviewId);
         return Map.of("RESULT","SUCCESS");
+    }
+
+    @GetMapping("/product/{productId}/avg")
+    public ResponseEntity<Double> getAvgRating(@PathVariable Long productId){
+        double avgRating = reviewRepository.reviewAvgRating(productId);
+        return ResponseEntity.ok(avgRating);
+    }
+
+    @GetMapping("/product/{productId}/count")
+    public ResponseEntity<Integer> getReviewCount(@PathVariable Long productId){
+        log.info("ProductId for review count: {}", productId);
+        int reviewCount = reviewRepository.reviewCount(productId);
+        log.info("Review count from repo: {}", reviewCount);
+        return ResponseEntity.ok(reviewCount);
+    }
+
+    @GetMapping("/product/{productId}/{rating}/count")
+    public ResponseEntity<Integer> getRatingBycount(
+            @PathVariable Long productId,
+            @PathVariable Integer rating
+    ){
+        int ratingBycount = reviewRepository.ratingByCount(productId, rating);
+        return ResponseEntity.ok(ratingBycount);
+    }
+
+    @GetMapping("/product/{productId}/positive")
+    public ResponseEntity<Integer> getPositiveReview(@PathVariable Long productId){
+        int positiveReview = reviewRepository.positiveReview(productId);
+        return ResponseEntity.ok(positiveReview);
     }
 
 }
