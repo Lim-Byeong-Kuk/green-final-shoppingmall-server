@@ -5,7 +5,6 @@ INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_d
 ('마스크팩', 1, 1, NOW(), NOW(), FALSE, NULL),
 ('클렌징', 1, 2, NOW(), NOW(), FALSE, NULL),
 ('선케어', 1, 3, NOW(), NOW(), FALSE, NULL),
-('클렌징', 1, 4, NOW(), NOW(), FALSE, NULL),
 ('메이크업', 1, 5, NOW(), NOW(), FALSE, NULL),
 ('메이크업 툴', 1, 6, NOW(), NOW(), FALSE, NULL),
 ('헤어케어', 1, 7, NOW(), NOW(), FALSE, NULL),
@@ -91,28 +90,28 @@ INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_d
 
 -- depth:3 스킨케어 하위의 하위
 INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_deleted, parent_id) VALUES
-('스킨/토너', 3, 0, NOW(), NOW(), FALSE, 11),
-('에센스/세럼/앰플', 3, 0, NOW(), NOW(), FALSE, 12),
-('크림', 3, 0, NOW(), NOW(), FALSE, 13),
-('아이크림', 3, 1, NOW(), NOW(), FALSE, 13),
-('로션', 3, 0, NOW(), NOW(), FALSE, 14),
-('올인원', 3, 1, NOW(), NOW(), FALSE, 14),
-('미스트/픽서', 3, 0, NOW(), NOW(), FALSE, 15),
-('페이스오일', 3, 1, NOW(), NOW(), FALSE, 15),
-('스킨케어세트', 3, 0, NOW(), NOW(), FALSE, 16),
-('스킨케어 디바이스', 3, 0, NOW(), NOW(), FALSE, 17);
+('스킨/토너', 3, 0, NOW(), NOW(), FALSE, 10),
+('에센스/세럼/앰플', 3, 0, NOW(), NOW(), FALSE, 11),
+('크림', 3, 0, NOW(), NOW(), FALSE, 12),
+('아이크림', 3, 1, NOW(), NOW(), FALSE, 12),
+('로션', 3, 0, NOW(), NOW(), FALSE, 13),
+('올인원', 3, 1, NOW(), NOW(), FALSE, 13),
+('미스트/픽서', 3, 0, NOW(), NOW(), FALSE, 14),
+('페이스오일', 3, 1, NOW(), NOW(), FALSE, 14),
+('스킨케어세트', 3, 0, NOW(), NOW(), FALSE, 15),
+('스킨케어 디바이스', 3, 0, NOW(), NOW(), FALSE, 16);
 
 -- depth:3 마스크팩 하위의 하위
 INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_deleted, parent_id) VALUES
-('시트 마스크', 3, 0, NOW(), NOW(), FALSE, 18),
-('겔 마스크', 3, 1, NOW(), NOW(), FALSE, 18),
-('패드', 3, 0, NOW(), NOW(), FALSE, 19),
-('워시오프팩', 3, 0, NOW(), NOW(), FALSE, 20),
-('모델링팩', 3, 1, NOW(), NOW(), FALSE, 20),
-('필오프팩', 3, 2, NOW(), NOW(), FALSE, 20),
-('슬리핑/앰플팩', 3, 3, NOW(), NOW(), FALSE, 20),
-('코팩', 3, 0, NOW(), NOW(), FALSE, 21),
-('패치', 3, 0, NOW(), NOW(), FALSE, 22);
+('시트 마스크', 3, 0, NOW(), NOW(), FALSE, 17),
+('겔 마스크', 3, 1, NOW(), NOW(), FALSE, 17),
+('패드', 3, 0, NOW(), NOW(), FALSE, 18),
+('워시오프팩', 3, 0, NOW(), NOW(), FALSE, 19),
+('모델링팩', 3, 1, NOW(), NOW(), FALSE, 19),
+('필오프팩', 3, 2, NOW(), NOW(), FALSE, 19),
+('슬리핑/앰플팩', 3, 3, NOW(), NOW(), FALSE, 19),
+('코팩', 3, 0, NOW(), NOW(), FALSE, 20),
+('패치', 3, 0, NOW(), NOW(), FALSE, 21);
 
 -- 2. brands 테이블에 데이터 삽입 (임시)
 INSERT INTO brands (name, is_deleted, created_at, updated_at) VALUES
@@ -138,12 +137,12 @@ INSERT INTO delivery_policies (name, policy_type, basic_delivery_fee, free_condi
 
 -- 3. products 테이블에 데이터 삽입 (임시)
 INSERT INTO products (brand_id, category_id, delivery_policy_id, use_restock_noti, product_name, product_code, search_keywords, exposure_status, sale_status, description, is_cancelable, is_deleted, created_at, updated_at) VALUES
-(1, 61, 2, TRUE, '바이오더마 하이드라비오 토너 500ml 기획(+화장솜 20매 증정)', 'SHS_001', '바이오더마 스킨 토너', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(2, 62, 2, TRUE, '[NO.1 미스트세럼] 달바 퍼스트 스프레이 세럼 100ml 2개 기획', 'WHOO_001', '달바 세럼', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(3, 63, 2, FALSE, '에스트라 아토베리어365 크림 80ml 기획', 'LANEIGE_001', '에스트라 크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(4, 64, 2, FALSE, '구달 청귤 비타C 잡티케어 아이크림 30ml 1+1 기획', 'INNIS_001', '구달 아이크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(5, 71, 2, FALSE, '메디힐 에센셜 마스크팩 1매 고기능 7종 택1', 'TFS_001', '메디힐 마스크팩', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(2, 72, 2, FALSE, '[4세대발효콜라겐/4매입] 달바 비타 하이드로겔 마스크 4매입', 'TFS_001', '달바 겔마스크', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW());
+(1, 60, 2, TRUE, '바이오더마 하이드라비오 토너 500ml 기획(+화장솜 20매 증정)', 'SHS_001', '바이오더마 스킨 토너', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
+(2, 61, 2, TRUE, '[NO.1 미스트세럼] 달바 퍼스트 스프레이 세럼 100ml 2개 기획', 'WHOO_001', '달바 세럼', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
+(3, 62, 2, FALSE, '에스트라 아토베리어365 크림 80ml 기획', 'LANEIGE_001', '에스트라 크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
+(4, 63, 2, FALSE, '구달 청귤 비타C 잡티케어 아이크림 30ml 1+1 기획', 'INNIS_001', '구달 아이크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
+(5, 70, 2, FALSE, '메디힐 에센셜 마스크팩 1매 고기능 7종 택1', 'TFS_001', '메디힐 마스크팩', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
+(2, 71, 2, FALSE, '[4세대발효콜라겐/4매입] 달바 비타 하이드로겔 마스크 4매입', 'TFS_001', '달바 겔마스크', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW());
 
 
 -- product_main_images 데이터
@@ -180,10 +179,10 @@ INSERT INTO product_options
  image_url, display_order,
  is_deleted, created_at, updated_at)
 VALUES
-(1, '바이오더마 토너 500ml 기획', 10000, 30000, 80, 100, 10, 'https://dummyimage.com/300x300/000/fff.png&text=Opt1', 0, false, NOW(), NOW()),
-(2, '달바 퍼스트 스프레이 세럼 100ml 2개 기획', 20000, 59800, 80, 100, 10, 'https://dummyimage.com/300x300/000/fff.png&text=Opt2', 0, false, NOW(), NOW()),
-(3, '에스트라 아토베리어365 크림 80ml 기획', 15000, 33000, 120, 120, 10, 'https://dummyimage.com/300x300/000/fff.png&text=Opt3', 0, false, NOW(), NOW()),
-(4, '구달 청귤 비타C 잡티케어 아이크림 30ml', 15000, 24000, 90, 90, 10, 'https://dummyimage.com/300x300/000/fff.png&text=Opt4', 0, false, NOW(), NOW()),
+(1, '바이오더마 토너 500ml 기획', 10000, 30000, 80, 100, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0018/A00000018491610ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5', 0, false, NOW(), NOW()),
+(2, '달바 퍼스트 스프레이 세럼 100ml 2개 기획', 20000, 59800, 80, 100, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0023/A00000023272408ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5', 0, false, NOW(), NOW()),
+(3, '에스트라 아토베리어365 크림 80ml 기획', 15000, 33000, 120, 120, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0022/A00000022283315ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5', 0, false, NOW(), NOW()),
+(4, '구달 청귤 비타C 잡티케어 아이크림 30ml', 15000, 24000, 90, 90, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0022/A00000022977610ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5', 0, false, NOW(), NOW()),
 (5, '티트리 진정수분 1매', 500, 1000, 80, 100, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/options/item/2025/1/2095773322051515522.jpg?RS=108x0&QT=85&SF=webp&sharpen=1x0.5', 0, false, NOW(), NOW()),
 (5, '콜라겐 코어탄력 1매', 500, 1000, 80, 100, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/options/item/2025/1/4292023589387008731.jpg?RS=108x0&QT=85&SF=webp&sharpen=1x0.5', 1, false, NOW(), NOW()),
 (5, '비타민씨 잡티토닝 1매', 500, 1000, 120, 120, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/options/item/2025/1/6333511698168958736.jpg?RS=108x0&QT=85&SF=webp&sharpen=1x0.5', 2, false, NOW(), NOW()),
