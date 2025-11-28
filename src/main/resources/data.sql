@@ -120,6 +120,7 @@ INSERT INTO brands (name, is_deleted, created_at, updated_at) VALUES
 ('에스트라', FALSE, NOW(), NOW()),
 ('구달', FALSE, NOW(), NOW()),
 ('메디힐', FALSE, NOW(), NOW()),
+('토리든', FALSE, NOW(), NOW()),
 ('이니스프리', FALSE, NOW(), NOW()),
 ('더페이스샵', FALSE, NOW(), NOW()),
 ('미샤', FALSE, NOW(), NOW()),
@@ -148,12 +149,12 @@ INSERT INTO product_detail_info (capacity, skin_type, usage_period, usage_method
 
 -- 3. products 테이블에 데이터 삽입 (임시)
 INSERT INTO products (product_detail_info_id, brand_id, category_id, delivery_policy_id, use_restock_noti, product_name, product_code, search_keywords, exposure_status, sale_status, description, is_cancelable, is_deleted, created_at, updated_at) VALUES
-(1, 1, 60, 2, TRUE, '바이오더마 하이드라비오 토너 500ml 기획(+화장솜 20매 증정)', 'SHS_001', '바이오더마 스킨 토너', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(2, 2, 61, 2, TRUE, '[NO.1 미스트세럼] 달바 퍼스트 스프레이 세럼 100ml 2개 기획', 'WHOO_001', '달바 세럼', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(3, 3, 62, 2, FALSE, '에스트라 아토베리어365 크림 80ml 기획', 'LANEIGE_001', '에스트라 크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(4, 4, 63, 2, FALSE, '구달 청귤 비타C 잡티케어 아이크림 30ml 1+1 기획', 'INNIS_001', '구달 아이크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(5, 5, 70, 2, FALSE, '메디힐 에센셜 마스크팩 1매 고기능 7종 택1', 'TFS_001', '메디힐 마스크팩', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW()),
-(6, 2, 71, 2, FALSE, '[4세대발효콜라겐/4매입] 달바 비타 하이드로겔 마스크 4매입', 'TFS_001', '달바 겔마스크', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, NOW(), NOW());
+(1, 1, 60, 2, TRUE, '바이오더마 하이드라비오 토너 500ml 기획(+화장솜 20매 증정)', 'SHS_001', '바이오더마 스킨 토너', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, '2025-10-26 09:00:00', '2025-10-26 09:00:00'),
+(2, 2, 61, 2, TRUE, '[NO.1 미스트세럼] 달바 퍼스트 스프레이 세럼 100ml 2개 기획', 'WHOO_001', '달바 세럼', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, '2025-09-29 09:31:20', '2025-09-29 09:31:20'),
+(3, 3, 62, 2, FALSE, '에스트라 아토베리어365 크림 80ml 기획', 'LANEIGE_001', '에스트라 크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, '2025-11-07 09:24:50', '2025-11-07 09:24:50'),
+(4, 4, 63, 2, FALSE, '구달 청귤 비타C 잡티케어 아이크림 30ml 1+1 기획', 'INNIS_001', '구달 아이크림', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, '2025-11-08 09:12:24', '2025-11-08 09:12:24'),
+(5, 5, 70, 2, FALSE, '메디힐 에센셜 마스크팩 1매 고기능 7종 택1', 'TFS_001', '메디힐 마스크팩', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, '2025-11-11 09:08:31', '2025-11-11 09:08:31'),
+(6, 2, 71, 2, FALSE, '[4세대발효콜라겐/4매입] 달바 비타 하이드로겔 마스크 4매입', 'TFS_001', '달바 겔마스크', 'EXPOSURE', 'ON_SALE', '설명 없음', true, false, '2025-11-12 09:18:25', '2025-11-12 09:18:25');
 
 
 -- product_detail_images 데이터 // 복사용 (1, 0, ''),

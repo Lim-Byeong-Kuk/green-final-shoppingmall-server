@@ -1,9 +1,6 @@
 package kr.kro.moonlightmoist.shopapi.product.service;
 
-import kr.kro.moonlightmoist.shopapi.product.dto.ProductImagesUrlDTO;
-import kr.kro.moonlightmoist.shopapi.product.dto.ProductRequest;
-import kr.kro.moonlightmoist.shopapi.product.dto.ProductResForDetail;
-import kr.kro.moonlightmoist.shopapi.product.dto.ProductResForList;
+import kr.kro.moonlightmoist.shopapi.product.dto.*;
 
 import java.util.List;
 
@@ -16,6 +13,8 @@ public interface ProductService {
     List<ProductResForList> searchProductsByCategory(List<Long> depth3CategoryIds);
     // 상품 단일 조회
     ProductResForDetail searchProductById(Long id);
+    // 관리자페이지에서 검색 조건으로 상품 리스트 조회
+    List<ProductResForList> searchProductsByCondition(ProductSearchCondition condition);
     // 상품 수정
     // 상품 삭제
 }

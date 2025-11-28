@@ -5,6 +5,7 @@ import kr.kro.moonlightmoist.shopapi.category.dto.CategoryResForList;
 import kr.kro.moonlightmoist.shopapi.policy.deliveryPolicy.dto.DeliveryPolicyDTO;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -22,5 +23,7 @@ public class ProductResForList {
     private DeliveryPolicyDTO deliveryPolicy;
     private List<ProductOptionDTO> options;
     private List<ProductMainImageRes> mainImages;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private boolean deleted;
 }

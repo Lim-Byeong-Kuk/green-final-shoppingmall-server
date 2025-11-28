@@ -113,4 +113,9 @@ public class ProductServiceImpl implements ProductService{
         return dto;
     }
 
+    @Override
+    public List<ProductResForList> searchProductsByCondition(ProductSearchCondition condition) {
+        return productRepository.search(condition);
+    }
+
 }

@@ -10,8 +10,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
-
+public interface ProductRepository extends JpaRepository<Product, Long>
+    , ProductCustomRepository
+{
     @Query("SELECT p FROM Product p WHERE p.basicInfo.productName = :name")
     Optional<Product> findByProductName(@Param("name") String name);
 

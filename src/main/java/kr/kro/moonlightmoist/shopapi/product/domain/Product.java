@@ -113,6 +113,8 @@ public class Product extends BaseTimeEntity {
                 .deliveryPolicy(this.deliveryPolicy.toDTO())
                 .mainImages(this.mainImages.stream().map(image -> image.toDTO()).toList())
                 .options(this.getProductOptions().stream().map(option -> option.toDTO()).toList())
+                .createdAt(this.getCreatedAt())
+                .updatedAt(this.getUpdatedAt())
                 .build();
     }
 
