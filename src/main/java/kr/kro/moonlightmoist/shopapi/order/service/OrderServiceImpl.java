@@ -62,11 +62,12 @@ public class OrderServiceImpl implements OrderService{
         else return 3000;
     }
 
-    public int calcDeliveryFee(int totalProductAmount) {
-        int basicFee = 3000;
-        int freeConditionAmount = 50000;
-        if(totalProductAmount >= 50000) return 0;
-        return basicFee;
+    public int calcDeliveryFee(int totalProductAmount, List<OrderProductRequestDTO> orderProducts) {
+        ProductOption productOption = productOptionRepository.findById(orderProducts.get(0).getProductOptionId()).get();
+        int basicDeliveryFee = productOption.getProduct().getDeliveryPolicy().getBasicDeliveryFee();
+        int freeConditionAmount = productOption.getProduct().getDeliveryPolicy().getFreeConditionAmount();
+        if(totalProductAmount >= freeConditionAmount) return 0;
+        return basicDeliveryFee;
     }
 
     public OrderResponseDTO toDto(Order order) {
@@ -116,7 +117,7 @@ public class OrderServiceImpl implements OrderService{
         // 3) 전체 상품 가격 계산
         int totalProductAmount = calcTotalProductAmount(dto.getOrderProducts());
         // 4) 배송비 계산
-        int deliveryFee = calcDeliveryFee(totalProductAmount);
+        int deliveryFee = calcDeliveryFee(totalProductAmount, dto.getOrderProducts());
         // 5) 쿠폰 할인 가격 계산
         int discountAmount = calcCouponDiscountAmount(totalProductAmount,dto.getCouponId());
         // 6) 최종 결제 금액 계산
