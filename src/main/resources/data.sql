@@ -166,6 +166,63 @@ INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_d
 ('아이래쉬 케어', 3, 3, NOW(), NOW(), FALSE, 36),
 ('아이 픽서', 3, 0, NOW(), NOW(), FALSE, 36);
 
+---- depth:3 헤어케어 하위의 하위
+INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_deleted, parent_id) VALUES
+('샴푸', 3, 0, NOW(), NOW(), FALSE, 42),
+('린스/컨디셔너', 3, 1, NOW(), NOW(), FALSE, 42),
+('드라이샴푸', 3, 2, NOW(), NOW(), FALSE, 42),
+('스케일러', 3, 3, NOW(), NOW(), FALSE, 42),
+('헤어 트리트먼트', 3, 0, NOW(), NOW(), FALSE, 43),
+('노워시 트리트먼트', 3, 1, NOW(), NOW(), FALSE, 43),
+('헤어토닉/두피토닉', 3, 0, NOW(), NOW(), FALSE, 44),
+('헤어세럼', 3, 0, NOW(), NOW(), FALSE, 45),
+('헤어오일', 3, 1, NOW(), NOW(), FALSE, 45),
+('컬러염색/탈색', 3, 0, NOW(), NOW(), FALSE, 46),
+('새치염색', 3, 1, NOW(), NOW(), FALSE, 46),
+('헤어메이크업', 3, 2, NOW(), NOW(), FALSE, 46),
+('파마', 3, 3, NOW(), NOW(), FALSE, 46),
+('컬크림/컬링에센스', 3, 0, NOW(), NOW(), FALSE, 48),
+('왁스/젤/무스/토닉', 3, 1, NOW(), NOW(), FALSE, 48),
+('스프레이/픽서', 3, 2, NOW(), NOW(), FALSE, 48);
+
+
+---- depth:3 바디케어 하위의 하위
+INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_deleted, parent_id) VALUES
+('바디로션', 3, 0, NOW(), NOW(), FALSE, 49),
+('바디크림', 3, 1, NOW(), NOW(), FALSE, 49),
+('바디미스트', 3, 0, NOW(), NOW(), FALSE, 50),
+('바디오일', 3, 1, NOW(), NOW(), FALSE, 50),
+('핸드크림', 3, 0, NOW(), NOW(), FALSE, 51),
+('핸드워시', 3, 1, NOW(), NOW(), FALSE, 51),
+('풋크림', 3, 0, NOW(), NOW(), FALSE, 52),
+('풋샴푸', 3, 1, NOW(), NOW(), FALSE, 52),
+('발냄새제거제', 3, 2, NOW(), NOW(), FALSE, 52),
+('바디워시', 3, 0, NOW(), NOW(), FALSE, 53),
+('바디스크럽', 3, 1, NOW(), NOW(), FALSE, 53),
+('입욕제', 3, 2, NOW(), NOW(), FALSE, 53),
+('비누', 3, 3, NOW(), NOW(), FALSE, 53),
+('제모크림', 3, 0, NOW(), NOW(), FALSE, 54),
+('스트립/왁스', 3, 1, NOW(), NOW(), FALSE, 54),
+('데오스틱', 3, 0, NOW(), NOW(), FALSE, 55),
+('데오롤온', 3, 1, NOW(), NOW(), FALSE, 55),
+('데오스프레이', 3, 2, NOW(), NOW(), FALSE, 55),
+('쿨링/데오시트', 3, 3, NOW(), NOW(), FALSE, 55),
+('보습', 3, 0, NOW(), NOW(), FALSE, 56),
+('세정', 3, 1, NOW(), NOW(), FALSE, 56),
+('선케어', 3, 2, NOW(), NOW(), FALSE, 56);
+
+---- depth:3 향수/디퓨터 하위의 하위
+INSERT INTO categories (name, depth, display_order, created_at, updated_at, is_deleted, parent_id) VALUES
+('여성향수', 3, 0, NOW(), NOW(), FALSE, 57),
+('남성향수', 3, 1, NOW(), NOW(), FALSE, 57),
+('유니섹스향수', 3, 2, NOW(), NOW(), FALSE, 57),
+('헤어퍼퓸', 3, 3, NOW(), NOW(), FALSE, 57),
+('고체향수', 3, 0, NOW(), NOW(), FALSE, 58),
+('소용량향수', 3, 1, NOW(), NOW(), FALSE, 58),
+('디스커버리세트', 3, 2, NOW(), NOW(), FALSE, 58),
+('디퓨저/캔들/인센스', 3, 0, NOW(), NOW(), FALSE, 59),
+('룸스프레이/탈취제', 3, 1, NOW(), NOW(), FALSE, 59),
+('차량용방향제/샤셰', 3, 2, NOW(), NOW(), FALSE, 59);
 
 -- 2. brands 테이블에 데이터 삽입 (임시)
 INSERT INTO brands (name, is_deleted, created_at, updated_at) VALUES
