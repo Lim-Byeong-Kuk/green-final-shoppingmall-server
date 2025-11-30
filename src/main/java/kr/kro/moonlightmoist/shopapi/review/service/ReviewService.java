@@ -16,7 +16,7 @@ public interface ReviewService {
     //리뷰 수정
     ReviewDTO modify(ReviewDTO reviewDTO);
     //리뷰 삭제
-    void remove(Long reviewId);
+    void remove(Long id);
     //s3 에 업로드한 이미지 url 추가
     void addImageUrls(Long id, ReviewImageUrlDTO dto);
 }

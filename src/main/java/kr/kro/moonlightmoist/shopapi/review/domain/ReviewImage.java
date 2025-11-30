@@ -1,10 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.review.domain;
 
 import jakarta.persistence.*;
-import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Embeddable
 @NoArgsConstructor

@@ -1,8 +1,6 @@
 package kr.kro.moonlightmoist.shopapi.review.service;
 
 import jakarta.transaction.Transactional;
-import kr.kro.moonlightmoist.shopapi.brand.repository.BrandRepository;
-import kr.kro.moonlightmoist.shopapi.category.repository.CategoryRepository;
 import kr.kro.moonlightmoist.shopapi.product.domain.Product;
 import kr.kro.moonlightmoist.shopapi.product.repository.ProductRepository;
 import kr.kro.moonlightmoist.shopapi.review.domain.Review;
@@ -27,12 +25,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final BrandRepository brandRepository;
     private final UserRepository userRepository;
 
-    public Product getProduct() {
-        return productRepository.findById(1L).get();
+    public Product getProduct(Long productId) {
+      return productRepository.findById(productId).get();
     }
 
     public User getUser() {
@@ -104,7 +100,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Long register(ReviewDTO dto) {
 
-        Product product = getProduct();
+        Product product = getProduct(dto.getProductId());
         User user = getUser();
 
         Review review = Review.builder()
@@ -128,7 +124,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.changeRating(reviewDTO.getRating());
 
         if (reviewDTO.getDeleteImgUrls() != null && !reviewDTO.getDeleteImgUrls().isEmpty()) {
-            review.removeImgUrls(reviewDTO.getDeleteImgUrls());
+          review.removeImgUrls(reviewDTO.getDeleteImgUrls());
         }
 
         List<String> imageUrls = review.getReviewImages().stream()

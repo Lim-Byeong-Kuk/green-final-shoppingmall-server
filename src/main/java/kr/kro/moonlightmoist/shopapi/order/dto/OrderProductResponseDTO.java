@@ -25,4 +25,7 @@ public class OrderProductResponseDTO {
     private String imageUrl;
     // 상품 주문 상태(주문 접수, 결제완료, 배송준비중, 배송중, 배송완료)
     private OrderProductStatus orderProductStatus;
+
+    // 상품 id
+    private Long productId;
 }

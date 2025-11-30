@@ -2,9 +2,8 @@ package kr.kro.moonlightmoist.shopapi.review.domain;
 
 import jakarta.persistence.*;
 import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
+import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -33,5 +32,11 @@ public class ReviewComment extends BaseTimeEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "review_id")
     private Review review;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public void changeContent(String content) { this.content = content; }
 
 }

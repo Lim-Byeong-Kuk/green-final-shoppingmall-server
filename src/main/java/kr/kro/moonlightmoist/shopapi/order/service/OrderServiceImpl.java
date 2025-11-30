@@ -92,6 +92,7 @@ public class OrderServiceImpl implements OrderService{
         for(OrderProduct op : order.getOrderProducts()){
             OrderProductResponseDTO orderProductResponseDTO = OrderProductResponseDTO.builder()
                     .id(op.getId())
+                    .productId(op.getProductOption().getProduct().getId())
                     .brandName(op.getProductOption().getProduct().getBrand().getName())
                     .productName(op.getProductOption().getProduct().getBasicInfo().getProductName())
                     .productOptionName(op.getProductOption().getOptionName())

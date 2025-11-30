@@ -1,7 +1,6 @@
 package kr.kro.moonlightmoist.shopapi.review.controller;
 
 import kr.kro.moonlightmoist.shopapi.aws.service.S3UploadService;
-import kr.kro.moonlightmoist.shopapi.review.domain.ReviewImage;
 import kr.kro.moonlightmoist.shopapi.review.dto.ReviewDTO;
 import kr.kro.moonlightmoist.shopapi.review.dto.ReviewImageUrlDTO;
 import kr.kro.moonlightmoist.shopapi.review.repository.ReviewRepository;
@@ -92,9 +91,9 @@ public class ReviewController {
     }
 
     @DeleteMapping("/delete/{reviewId}")
-    public Map<String,String> remove(@PathVariable("reviewId") Long reviewId){
+    public ResponseEntity<String> remove(@PathVariable("reviewId") Long reviewId){
         reviewService.remove(reviewId);
-        return Map.of("RESULT","SUCCESS");
+        return ResponseEntity.ok("성공");
     }
 
     @GetMapping("/product/{productId}/avg")
