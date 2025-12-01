@@ -51,4 +51,10 @@ public class UserServiceImpl implements UserService {
         throw new IllegalArgumentException("없는 아이디 입니다.");
     }
 
+    @Override
+    public boolean existsByLoginId(String loginId) { // 컨트롤러에서 loginId 받음
+        return userRepository.existsByLoginId(loginId); // 해당 loginId를 DB에서 찾아서 반환해줌
+    }
+
+
 }

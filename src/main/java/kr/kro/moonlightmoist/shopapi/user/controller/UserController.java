@@ -2,6 +2,7 @@ package kr.kro.moonlightmoist.shopapi.user.controller;
 
 
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
+import kr.kro.moonlightmoist.shopapi.user.dto.LoginIdCheckResponse;
 import kr.kro.moonlightmoist.shopapi.user.dto.UserLoginRequest;
 import kr.kro.moonlightmoist.shopapi.user.dto.UserLoginResponse;
 import kr.kro.moonlightmoist.shopapi.user.dto.UserSignUpRequest;
@@ -43,6 +44,18 @@ public class UserController {
         UserLoginResponse userLoginResponse = userService.login(userLoginRequest);
         log.info("유저정보 Response: {}", userLoginResponse);
         return ResponseEntity.ok(userLoginResponse);
+    }
+
+    @GetMapping("/check-loginId")
+    public ResponseEntity<LoginIdCheckResponse> checkLoginId (@RequestParam String loginId) {
+        // @requestParam = QueryParameter 값을 추출해서 해당 인자 String loginId로 변환해서 받는다.
+        // 프론트 요청에서 Params로 보냈기때문에 즉, 쿼리파라미터로 보냈기 때문에 해당 어노테이션 사용
+        boolean isDuplicate = userService.existsByLoginId(loginId); // service의 existsByLoginId 메서드 사용
+        String message = isDuplicate ? "이미 사용 중인 아이디입니다." : "사용 가능한 아이디 입니다.";
+
+        LoginIdCheckResponse response = new LoginIdCheckResponse(isDuplicate, message);
+        // true / false만 반환하는 대신에 중복여부확인과 프론트에 전달할 메세지까지 객체형태로 담아서 전달
+        return ResponseEntity.ok(response);
     }
 
 
