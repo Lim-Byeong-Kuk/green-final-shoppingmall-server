@@ -40,11 +40,6 @@ public class ReviewServiceImpl implements ReviewService {
         return userRepository.findById(1L).get();
     }
 
-    public List<Order> getOrder() {
-        List<Order> orderByUserId = orderRepository.findOrderByUserId(2L);
-        return orderByUserId;
-    }
-
     @Override
     public List<ReviewDTO> getList(Long productId, String sort) {
         List<Review> reviews = reviewRepository.findByProductId(productId);
@@ -130,8 +125,8 @@ public class ReviewServiceImpl implements ReviewService {
 
         Product product = getProduct(dto.getProductId());
         User user = getUser();
-        List<Order> orders = getOrder();
-        Order order = orders.get(0);
+
+        Order order = orderRepository.findById(dto.getOrderId()).get();
 
         Review review = Review.builder()
                 .user(user)
