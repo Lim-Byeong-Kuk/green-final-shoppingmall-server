@@ -11,7 +11,6 @@ import kr.kro.moonlightmoist.shopapi.product.domain.*;
 import kr.kro.moonlightmoist.shopapi.product.dto.*;
 import kr.kro.moonlightmoist.shopapi.product.repository.DetailInfoRepository;
 import kr.kro.moonlightmoist.shopapi.product.repository.ProductRepository;
-import kr.kro.moonlightmoist.shopapi.productInfo.domain.ProductInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,7 +53,7 @@ public class ProductServiceImpl implements ProductService{
 
         Product product = toEntity(dto);
         for(ProductOptionDTO optionDTO : dto.getOptions()) {
-            ProductOption option = optionDTO.toDomain();
+            ProductOption option = optionDTO.toEntity();
             product.addProductOption(option);
         }
         Product savedProduct = productRepository.save(product);
@@ -139,19 +138,54 @@ public class ProductServiceImpl implements ProductService{
 
         DetailInfo modifiedDetailInfo = detailInfo.changeDetailInfo(dto.getDetailInfo());
 
+        // 옵션 기존의 있는 것 찾기
+        List<ProductOptionDTO> existingOptions = dto.getOptions().stream()
+                .filter(option -> option.getId() != null).toList();
+        List<Long> existingIds = existingOptions.stream()
+                .map(option ->
+                    option.getId()).toList();
+
+        List<ProductOptionDTO> newOptions = dto.getOptions().stream()
+                .filter(option -> option.getId() == null).toList();
+
+        for (ProductOption option : product.getProductOptions()) {
+            if(existingIds.contains(option.getId())) {
+
+                ProductOptionDTO foundOptionDto = existingOptions.stream()
+                        .filter(optionDto -> optionDto.getId().equals(option.getId()))
+                        .toList().get(0);
+
+                if(foundOptionDto.getType().equals("deleted")) {
+                    option.setDeleted(foundOptionDto.isDeleted());
+                } else {
+                    option.setOptionName(foundOptionDto.getOptionName());
+                    option.setPurchasePrice(foundOptionDto.getPurchasePrice());
+                    option.setSellingPrice(foundOptionDto.getSellingPrice());
+                    option.setCurrentStock(foundOptionDto.getCurrentStock());
+                    option.setInitialStock(foundOptionDto.getInitialStock());
+                    option.setSafetyStock(foundOptionDto.getSafetyStock());
+                    option.setImageUrl(foundOptionDto.getImageUrl());
+                    option.setDisplayOrder(foundOptionDto.getDisplayOrder());
+                    option.setDeleted(foundOptionDto.isDeleted());
+                }
+            }
+        }
+
+        for (ProductOptionDTO newOptionDto : newOptions) {
+            ProductOption entity = newOptionDto.toEntity();
+            product.addProductOption(entity);
+        }
+
         product.setCategory(category);
         product.setBrand(brand);
         product.setBasicInfo(dto.getBasicInfo().toDomain());
         product.setSaleInfo(dto.getSaleInfo().toDomain());
         product.setDeliveryPolicy(deliveryPolicy);
         product.setDetailInfo(modifiedDetailInfo);
+        product.setMainImages(dto.getMainImages().stream().map(img -> img.toDomain()).toList());
+        product.setDetailImages(dto.getDetailImages().stream().map(img -> img.toDomain()).toList());
 
         Product modifiedProduct = productRepository.findById(id).get();
-        System.out.println("modifiedProduct.getCategory() = " + modifiedProduct.getCategory());
-        System.out.println("modifiedProduct.getBrand() = " + modifiedProduct.getBrand());
-        System.out.println("modifiedProduct.getDeliveryPolicy() = " + modifiedProduct.getDeliveryPolicy());
-        System.out.println("modifiedProduct.getSaleInfo() = " + modifiedProduct.getSaleInfo());
-        System.out.println("modifiedProduct.getBasicInfo() = " + modifiedProduct.getBasicInfo());
 
         return 0L;
     }

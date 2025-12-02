@@ -1,4 +1,4 @@
-package kr.kro.moonlightmoist.shopapi.product.dto;
+package kr.kro.moonlightmoist.shopapi.product.dto.modify;
 
 import kr.kro.moonlightmoist.shopapi.product.domain.ImageType;
 import lombok.*;
@@ -6,11 +6,13 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class ProductMainImageRes {
+public class ImageOrderDataReq {
+    private String type;
     private String imageUrl;
     private int displayOrder;
     private ImageType imageType;
+
 }

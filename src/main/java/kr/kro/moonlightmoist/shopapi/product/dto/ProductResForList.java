@@ -22,7 +22,7 @@ public class ProductResForList {
     private SaleInfoDTO saleInfo;
     private DeliveryPolicyDTO deliveryPolicy;
     private List<ProductOptionDTO> options;
-    private List<ProductMainImageRes> mainImages;
+    private List<ProductMainImageDto> mainImages;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean deleted;

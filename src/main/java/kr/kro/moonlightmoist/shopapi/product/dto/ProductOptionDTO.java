@@ -2,7 +2,6 @@ package kr.kro.moonlightmoist.shopapi.product.dto;
 
 import kr.kro.moonlightmoist.shopapi.product.domain.ProductOption;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -20,8 +19,10 @@ public class ProductOptionDTO {
     private int safetyStock;
     private String imageUrl;
     private int displayOrder;
+    private String type;
+    private boolean deleted;
 
-    public ProductOption toDomain() {
+    public ProductOption toEntity() {
         return ProductOption.builder()
                 .optionName(this.optionName)
                 .purchasePrice(this.purchasePrice)
@@ -29,6 +30,9 @@ public class ProductOptionDTO {
                 .currentStock(this.currentStock)
                 .initialStock(this.initialStock)
                 .safetyStock(this.safetyStock)
+                .imageUrl(this.imageUrl)
+                .displayOrder(this.displayOrder)
+                .deleted(this.deleted)
                 .build();
     }
 

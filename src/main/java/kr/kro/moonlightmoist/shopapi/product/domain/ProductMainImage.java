@@ -1,8 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.product.domain;
 
 import jakarta.persistence.*;
-import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
-import kr.kro.moonlightmoist.shopapi.product.dto.ProductMainImageRes;
+import kr.kro.moonlightmoist.shopapi.product.dto.ProductMainImageDto;
 import lombok.*;
 
 @Embeddable
@@ -28,8 +27,8 @@ public class ProductMainImage {
         this.displayOrder = ord;
     }
 
-    public ProductMainImageRes toDTO() {
-        return ProductMainImageRes.builder()
+    public ProductMainImageDto toDTO() {
+        return ProductMainImageDto.builder()
                 .imageUrl(this.imageUrl)
                 .displayOrder(this.displayOrder)
                 .imageType(this.imageType)

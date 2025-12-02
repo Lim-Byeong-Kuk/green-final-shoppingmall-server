@@ -7,11 +7,12 @@ import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
+@ToString(exclude = "detailInfo")
 public class ProductRequest {
     private CategoryRegisterReq category;
     private BrandDTO brand;
@@ -21,5 +22,6 @@ public class ProductRequest {
     private DetailInfoDTO detailInfo;
     private List<ProductOptionDTO> options;
     private boolean deleted;
-
+    private List<ProductMainImageDto> mainImages;
+    private List<ProductDetailImageDto> detailImages;
 }

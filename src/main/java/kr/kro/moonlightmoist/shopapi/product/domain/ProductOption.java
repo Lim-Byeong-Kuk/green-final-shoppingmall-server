@@ -96,6 +96,7 @@ public class ProductOption extends BaseTimeEntity {
                 .safetyStock(this.safetyStock)
                 .imageUrl(this.imageUrl)
                 .displayOrder(this.displayOrder)
+                .deleted(this.deleted)
                 .build();
     }
 }

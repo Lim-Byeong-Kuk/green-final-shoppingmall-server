@@ -22,7 +22,7 @@ public class ProductResForDetail {
     private DeliveryPolicyDTO deliveryPolicy;
     private DetailInfoDTO detailInfo;
     private List<ProductOptionDTO> options;
-    private List<ProductMainImageRes> mainImages;
-    private List<ProductDetailImageRes> detailImages;
+    private List<ProductMainImageDto> mainImages;
+    private List<ProductDetailImageDto> detailImages;
     private boolean deleted;
 }

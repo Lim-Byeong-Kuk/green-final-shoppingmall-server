@@ -2,10 +2,7 @@ package kr.kro.moonlightmoist.shopapi.product.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Table;
-import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
-import kr.kro.moonlightmoist.shopapi.product.dto.ProductDetailImageRes;
-import kr.kro.moonlightmoist.shopapi.product.dto.ProductMainImageRes;
+import kr.kro.moonlightmoist.shopapi.product.dto.ProductDetailImageDto;
 import lombok.*;
 
 @Embeddable
@@ -26,8 +23,8 @@ public class ProductDetailImage {
         this.displayOrder = ord;
     }
 
-    public ProductDetailImageRes toDTO() {
-        return ProductDetailImageRes.builder()
+    public ProductDetailImageDto toDTO() {
+        return ProductDetailImageDto.builder()
                 .imageUrl(this.imageUrl)
                 .displayOrder(this.displayOrder)
                 .build();
