@@ -5,6 +5,8 @@ import kr.kro.moonlightmoist.shopapi.coupon.domain.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -21,16 +23,16 @@ public class CouponDto {
     private AutoIssueTrigger autoIssueTrigger;
     private String couponCode;
     private Long totalQuantity;
-    private LocalDate issuableStartDate;
-    private LocalDate issuableEndDate;
+    private LocalDateTime issuableStartDate;
+    private LocalDateTime issuableEndDate;
     private CouponAvailability availability;
     @JsonProperty("hasLimitUsagePeriod")
     private Boolean limitUsagePeriod;
-    private LocalDate validFrom;
-    private LocalDate validTo;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
     @JsonProperty("hasLimitMinOrder")
-    private Boolean limitMinOrderAmount;//
-    private Integer minOrderAmount;//
+    private Boolean limitMinOrderAmount;
+    private Integer minOrderAmount;
     private DiscountType discountType;
     private Integer fixedDiscountAmount;
     private Integer discountPercentage;

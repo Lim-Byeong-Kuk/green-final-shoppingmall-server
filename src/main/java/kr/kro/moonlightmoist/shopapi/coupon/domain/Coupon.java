@@ -6,6 +6,7 @@ import kr.kro.moonlightmoist.shopapi.coupon.dto.CouponDto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -24,12 +25,15 @@ public class Coupon extends BaseTimeEntity {
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private IssueType issueType;
 
     @Column(nullable = true)
+    @Enumerated(EnumType.STRING)
     private AutoIssueType autoIssueType;
 
     @Column(nullable = true)
+    @Enumerated(EnumType.STRING)
     private AutoIssueTrigger autoIssueTrigger;
 
     @Column(nullable = true)
@@ -38,23 +42,24 @@ public class Coupon extends BaseTimeEntity {
     @Column(nullable = true)
     private Long totalQuantity;
 
-    @Column(nullable = false)
-    private LocalDate issuableStartDate;
+    @Column(nullable = true)
+    private LocalDateTime issuableStartDate;
+
+    @Column(nullable = true)
+    private LocalDateTime issuableEndDate;
 
     @Column(nullable = false)
-    private LocalDate issuableEndDate;
-
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private CouponAvailability availability;
 
     @Column(name = "has_limit_usage_period", nullable = false)
     private Boolean limitUsagePeriod;
 
-    @Column(nullable = false)
-    private LocalDate validFrom;
+    @Column(nullable = true)
+    private LocalDateTime validFrom;
 
-    @Column(nullable = false)
-    private LocalDate validTo;
+    @Column(nullable = true)
+    private LocalDateTime validTo;
 
     @Column(name = "has_limit_min_order_amount", nullable = false)
     private Boolean limitMinOrderAmount;
@@ -63,6 +68,7 @@ public class Coupon extends BaseTimeEntity {
     private Integer minOrderAmount;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DiscountType discountType;
 
     @Column(nullable = true)
