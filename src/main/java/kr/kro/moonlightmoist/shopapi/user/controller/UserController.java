@@ -63,11 +63,15 @@ public class UserController {
         return ResponseEntity.ok(profileResponse);
     }
 
-//    @PutMapping("/profile-modify")
-//    public ResponseEntity<UserModifyResponse> modifyUserProfile (@RequestBody UserModifyRequest userModifyRequest) {
-//
-//        return ResponseEntity.ok(userModifyResponse);
-//    }
+    @PutMapping("/profile-modify")
+    public ResponseEntity<UserModifyResponse> modifyUserProfile (@RequestBody UserModifyRequest userModifyRequest) {
+        UserModifyResponse response = userService.modifyUserProfile(userModifyRequest);
+        if(response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 
 

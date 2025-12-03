@@ -2,6 +2,7 @@ package kr.kro.moonlightmoist.shopapi.user.domain;
 
 import jakarta.persistence.*;
 import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
+import kr.kro.moonlightmoist.shopapi.user.dto.UserModifyRequest;
 import lombok.*;
 import org.hibernate.type.EntityType;
 
@@ -97,6 +98,18 @@ public class User extends BaseTimeEntity {
     public void RollBackWithdrawal() {
         this.deleted = false;
         this.deletedAt = null;
+    }
+
+    public void updateProfile(UserModifyRequest request) {
+        this.name = request.getName();
+        this.phoneNumber = request.getPhoneNumber();
+        this.email = request.getEmail();
+        this.birthDate = request.getBirthDate();
+        this.postalCode = request.getPostalCode();
+        this.address = request.getAddress();
+        this.addressDetail = request.getAddressDetail();
+        this.emailAgreement = request.isEmailAgreement();
+        this.smsAgreement = request.isSmsAgreement();
     }
 
 

@@ -9,5 +9,5 @@ public interface UserService {
     UserLoginResponse login(UserLoginRequest userLoginRequest);
     boolean checkLoginId(String loginId);
     UserProfileResponse getUserProfile(String loginId);
-//    UserModifyResponse modifyUserProfile(UserModifyRequest userModifyRequest);
+    UserModifyResponse modifyUserProfile(UserModifyRequest userModifyRequest);
 }
