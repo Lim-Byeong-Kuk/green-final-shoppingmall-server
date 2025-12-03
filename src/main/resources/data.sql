@@ -335,6 +335,10 @@ VALUES
 (5, '히알루론산 고밀도 수분 1매', 800, 2000, 70, 70, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/options/item/2025/2/7886183073217244310.jpg?RS=108x0&QT=85&SF=webp&sharpen=1x0.5', 6, false, NOW(), NOW()),
 (6, '달바 비타 하이드로겔 마스크 4매입', 14000, 28000, 70, 70, 10, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0022/A00000022879929ko.png?l=ko&QT=100&SF=webp&sharpen=1x0.5', 0, false, NOW(), NOW());
 
+---- coupons 테이블 데이터 삽임
+INSERT INTO coupons (name, issue_type, auto_issue_type, auto_issue_trigger, coupon_code, total_quantity, issuable_start_date, issuable_end_date, availability, has_limit_usage_period, valid_from, valid_to, has_limit_min_order_amount, min_order_amount, discount_type, fixed_discount_amount, discount_percentage, has_limit_max_discount_amount, max_discount_amount, is_deleted, created_at, updated_at)
+VALUES
+('신규회원 환영 쿠폰', 'AUTO', 'NEWUSER', 'ALL_USER', NULL, 9999999999, NULL, NULL, 'USABLE', FALSE, NULL, NULL, TRUE, 20000, 'FIXED', 3000, NULL, NULL, NULL, FALSE, NOW(), NOW());
 
 -- 민석 users 테이블에 데이터 삽입 (임시)
 INSERT INTO users
