@@ -1,0 +1,30 @@
+package kr.kro.moonlightmoist.shopapi.review.controller;
+
+import kr.kro.moonlightmoist.shopapi.review.dto.ReviewLikeDTO;
+import kr.kro.moonlightmoist.shopapi.review.service.ReviewLikeService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@Slf4j
+@RequestMapping("/api/like")
+@CrossOrigin(origins = "http://localhost:5173")
+public class ReviewLikeController {
+
+    private final ReviewLikeService reviewLikeService;
+
+    @PostMapping("/{reviewId}")
+    public boolean toggleLike(
+            @PathVariable("reviewId") Long reviewId,
+            @RequestBody ReviewLikeDTO dto) {
+        return reviewLikeService.toggleReviewLike(reviewId, dto.getUserId());
+    }
+
+    @GetMapping("/{reviewId}/count")
+    public int countLikes(@PathVariable("reviewId") Long reviewId) {
+        return reviewLikeService.countReviewLike(reviewId);
+    }
+
+}

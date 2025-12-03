@@ -17,7 +17,6 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class ReviewCommentController {
 
-    private final ReviewCommentRepository reviewCommentRepository;
     private final ReviewCommentService reviewCommentService;
 
     @GetMapping("/{reviewId}")

@@ -5,7 +5,6 @@ import kr.kro.moonlightmoist.shopapi.review.dto.ReviewImageUrlDTO;
 
 import java.util.List;
 
-
 public interface ReviewService {
     //상품의 리뷰 전체 조회
     List<ReviewDTO> getList(Long productId, String sort);
