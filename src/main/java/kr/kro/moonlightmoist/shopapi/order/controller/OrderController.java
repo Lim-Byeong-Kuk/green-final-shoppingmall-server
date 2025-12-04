@@ -41,4 +41,11 @@ public class OrderController {
     public List<OrderResponseDTO> getOrderList(@RequestParam Long userId) {
         return orderService.getOrderList(userId);
     }
+
+    @DeleteMapping("")
+    public ResponseEntity<String> deleteOneOrder(@RequestParam Long orderId) {
+        log.info("deleteOneOrder 메서드 실행 orderId:{}", orderId);
+        orderService.deleteOneOrder(orderId);
+        return ResponseEntity.ok("삭제 성공");
+    }
 }

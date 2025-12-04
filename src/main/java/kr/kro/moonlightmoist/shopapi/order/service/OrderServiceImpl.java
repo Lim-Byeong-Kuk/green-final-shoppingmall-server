@@ -204,4 +204,10 @@ public class OrderServiceImpl implements OrderService{
 
     }
 
+    @Override
+    public void deleteOneOrder(Long orderId) {
+        log.info("deleteOneOrder 메서드 실행 orderId:{}",orderId);
+        orderRepository.deleteById(orderId);
+    }
+
 }

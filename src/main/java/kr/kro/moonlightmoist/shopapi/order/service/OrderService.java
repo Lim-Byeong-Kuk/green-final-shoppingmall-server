@@ -19,5 +19,6 @@ public interface OrderService {
     BigDecimal getExpectedAmount(String merchantUid);
     // 결제 검증이 끝나고 주문 상품 상태를 결제 완료로 변경
     void completeOrder(String merchantUid);
+    void deleteOneOrder(Long orderId);
 
 }

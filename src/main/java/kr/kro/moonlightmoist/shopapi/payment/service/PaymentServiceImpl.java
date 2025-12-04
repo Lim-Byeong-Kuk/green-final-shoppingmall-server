@@ -33,6 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @PostConstruct
     public void init() {
+        log.info("restApiKey:{}, restApiSecret:{}",restApiKey,restApiSecret);
         this.iamportClient = new IamportClient(restApiKey, restApiSecret);
         log.info("PortOne IamportClient 초기화 완료.");
     }
@@ -56,6 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
         if(payment.getAmount().compareTo(expectedAmount) != 0) {
             log.error("결제 금액 불일치. DB 금액: {}, 실제 결제 금액: {}", expectedAmount, payment.getAmount());
 
+            // 결제 취소
             try{
                 CancelData cancelData = new CancelData(impUid,true); // true = 전액취소
                 cancelData.setReason("결제 금액 불일치로 인한 자동 취소"); // 취소 사유 (필수)
