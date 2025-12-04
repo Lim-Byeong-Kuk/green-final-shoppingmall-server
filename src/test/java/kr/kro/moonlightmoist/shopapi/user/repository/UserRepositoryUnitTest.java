@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,7 +103,7 @@ class UserRepositoryUnitTest { // 생성, 삭제, 수정, 제약조건
                 .password("")
                 .postalCode("")
                 .deleted(true)
-                .deletedAt(LocalDate.of(2025,11,11))
+                .deletedAt(LocalDateTime.of(2025,11,11,00,00,00))
                 .build();
 
 //        예외처리 로직

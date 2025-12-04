@@ -5,14 +5,12 @@ import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.dto.*;
 import kr.kro.moonlightmoist.shopapi.user.repository.UserRepository;
 import kr.kro.moonlightmoist.shopapi.user.service.UserService;
+import kr.kro.moonlightmoist.shopapi.user.service.UserWithdrawalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor // Final 생성
@@ -29,6 +27,7 @@ import java.util.Optional;
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
+    private final UserWithdrawalService userWithdrawalService;
 
     @PostMapping("/signup") // RequestMapping + ??
     public ResponseEntity<String> userResister(@RequestBody UserSignUpRequest userSignUpRequest) {
@@ -61,8 +60,8 @@ public class UserController {
 
     // Todo : REST API 원칙으로 @PathVariable 사용해서 변경하기.
     // @RequestParam 방식은 쿼리파라미터를 보내는 방식으로 REST API 원칙과는 다른방식
-    @GetMapping("/profile")
-    public ResponseEntity<UserProfileResponse> getUserProfile (@RequestParam String loginId) {
+    @GetMapping("/profile/{loginId}")
+    public ResponseEntity<UserProfileResponse> getUserProfile (@PathVariable String loginId) {
         UserProfileResponse profileResponse = userService.getUserProfile(loginId);
         return ResponseEntity.ok(profileResponse);
     }
@@ -88,6 +87,16 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<UserWithdrawalResponse> withdrawUser (@RequestBody UserWithdrawalRequest request) {
+        UserWithdrawalResponse response = userWithdrawalService.withdrawUser(request);
+        log.info("여기는 회원탈퇴 컨트롤러 : {} ", response);
+        if(!response.isSuccess()){
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.ok(response);
+    }
 
 
 

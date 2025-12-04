@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.type.EntityType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity // DB와 1:1 매핑되는 클래스  JPA가 관리한다.
 @Table(name = "users") // 테이블 어노테이션
@@ -59,7 +60,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted; // 회원탈퇴 여부 컬럼
 
-    private LocalDate deletedAt; // 회원탈퇴 일자
+    private LocalDateTime deletedAt; // 회원탈퇴 일자
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -92,7 +93,7 @@ public class User extends BaseTimeEntity {
 
     public void withdrawal() {
         this.deleted = true;
-        this.deletedAt = LocalDate.now();
+        this.deletedAt = LocalDateTime.now();
     }
 
     public void RollBackWithdrawal() {
@@ -114,6 +115,12 @@ public class User extends BaseTimeEntity {
 
     public void changePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    // 12-4 추가
+    public void withdraw() {
+        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
     }
 
 
