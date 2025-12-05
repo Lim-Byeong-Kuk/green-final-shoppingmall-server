@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import kr.kro.moonlightmoist.shopapi.common.domain.BaseTimeEntity;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "user_with_drawal")
+@Table(name = "user_withdrawal")
 @Getter
 @Builder
 @Setter
@@ -26,8 +28,7 @@ public class UserWithdrawal extends BaseTimeEntity { // 회원탈퇴 테이블
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
-    public void RollBackWithdrawalReason() {
-        this.userWithdrawalReason = null;
-    }
+    // 관리자 회원복구 로직 병국이형
+
 
 }
