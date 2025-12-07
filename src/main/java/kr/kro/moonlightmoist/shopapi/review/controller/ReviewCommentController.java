@@ -43,8 +43,11 @@ public class ReviewCommentController {
     }
 
     @DeleteMapping("/delete/{commentId}")
-    public ResponseEntity<String> remove(@PathVariable("commentId") Long commentId) {
-      reviewCommentService.remove(commentId);
+    public ResponseEntity<String> remove(
+        @PathVariable("commentId") Long commentId,
+        @RequestParam Long userId
+    ) {
+      reviewCommentService.remove(commentId,userId);
       return ResponseEntity.ok("성공");
     }
 }

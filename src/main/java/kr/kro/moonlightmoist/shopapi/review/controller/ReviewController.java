@@ -107,8 +107,11 @@ public class ReviewController {
     }
 
     @DeleteMapping("/delete/{reviewId}")
-    public ResponseEntity<String> remove(@PathVariable("reviewId") Long reviewId){
-        reviewService.remove(reviewId);
+    public ResponseEntity<String> remove(
+        @PathVariable("reviewId") Long reviewId,
+        @RequestParam Long userId
+        ) {
+        reviewService.remove(reviewId, userId);
         return ResponseEntity.ok("성공");
     }
 
