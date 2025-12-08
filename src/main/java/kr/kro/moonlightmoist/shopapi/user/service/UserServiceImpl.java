@@ -4,21 +4,29 @@ import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.dto.*;
 import kr.kro.moonlightmoist.shopapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User registerUser(UserSignUpRequest userSignUpRequest) {
 
+        String encodePassword = passwordEncoder.encode(userSignUpRequest.getPassword());
+
+        log.info("PasswordEncoding 출력 : {} ", encodePassword);
+
         return User.builder()
                 .loginId(userSignUpRequest.getLoginId())
-                .password(userSignUpRequest.getPassword())
+                .password(encodePassword)
                 .name(userSignUpRequest.getName())
                 .phoneNumber(userSignUpRequest.getPhoneNumber())
                 .email(userSignUpRequest.getEmail())
@@ -37,7 +45,7 @@ public class UserServiceImpl implements UserService {
         if (findLoginId.isPresent()) {
             User user = findLoginId.get();
 
-            if (!user.getPassword().equals(userLoginRequest.getPassword())) {
+            if (!passwordEncoder.matches(userLoginRequest.getPassword(),user.getPassword())) {
                 throw new IllegalArgumentException("비밀번호가 일치 하지 않습니다.");
             }
             return UserLoginResponse.builder()
@@ -91,7 +99,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByLoginId(userModifyRequest.getLoginId())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         // 전형적인 예외처리.
-        if(!user.getPassword().equals(userModifyRequest.getPassword())) {
+        if(!passwordEncoder.matches(userModifyRequest.getPassword(),user.getPassword())) {
             return new UserModifyResponse(false, "비밀번호가 일치하지 않습니다.", null);
             // 해당 유저의 비밀번호를 equals으로 Request form에 있는 비밀번호와 대조
             // 틀릴 경우 UserModifyResponse 객체를 새로 생성해서 기본생성자로 필드 값을 저장
@@ -114,10 +122,14 @@ public class UserServiceImpl implements UserService {
     public PasswordChangeResponse changeUserPassword(PasswordChangeRequest passwordChangeRequest) {
         User user = userRepository.findByLoginId(passwordChangeRequest.getLoginId())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        if (!user.getPassword().equals(passwordChangeRequest.getPassword())) {
+
+        if (!passwordEncoder.matches(passwordChangeRequest.getPassword(), user.getPassword())) {
             return new PasswordChangeResponse(false, "비밀번호가 일치하지 않습니다.");
         }
-        user.changePassword(passwordChangeRequest.getNewPassword());
+
+        String encodeNewPassword = passwordEncoder.encode(passwordChangeRequest.getNewPassword());
+        user.changePassword(encodeNewPassword);
+
         userRepository.save(user);
         return new PasswordChangeResponse(true, "비밀번호 변경 완료");
     }

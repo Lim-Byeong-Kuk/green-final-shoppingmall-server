@@ -349,13 +349,13 @@ INSERT INTO users
  postal_code, address, address_detail, email_agreement, sms_agreement,
  is_deleted, deleted_at, user_role, user_grade, created_at, updated_at)
 VALUES
-(1,'user1','pw1','사용자1','01011111111','user1@test.com','1996-01-01','11111','서울시 강남구','101호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()),
-(2,'user2','pw2','사용자2','01022222222','user2@test.com','1996-02-02','22222','서울시 강북구','102호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()),
-(3,'user3','pw3','사용자3','01033333333','user3@test.com','1996-03-03','33333','서울시 송파구','103호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()),
-(4,'user4','pw4','사용자4','01044444444','user4@test.com','1996-04-04','44444','서울시 영등포구','104호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()),
-(5,'user5','pw5','사용자5','01055555555','user5@test.com','1996-05-05','55555','서울시 마포구','105호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()),
-(6,'user','a','유저','01012345677','user@naver.com','2025-12-08','12345','성남시 미금역','그린아카데미',false,true,false,NULL,'USER','BRONZE',NOW(),NOW()),
-(7,'admin','a','관리자','01012345678','admin@naver.com','2025-12-08','12345','성남시 미금역','그린아카데미',false,true,false,NULL,'ADMIN','VIP',NOW(),NOW());
+(1,'user1','$2a$10$ZsSz5LcmTRE9lEgNUhpuXOYWjwgehPPdldI6BXeMgtthtn0iP9b6','사용자1','01011111111','user1@test.com','1996-01-01','11111','서울시 강남구','101호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()), -- pw1
+(2,'user2','$2a$10$zOns/BpvnF4g12wyP9j64uh2jNYVFZ9t918B6rkqWA0cv2Fb.1YO6','사용자2','01022222222','user2@test.com','1996-02-02','22222','서울시 강북구','102호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()), -- pw2
+(3,'user3','$2a$10$.faqFG5T7zY28GC2H8N51OTmQmha8GY6foa20agCPWR6VczdLNDVG','사용자3','01033333333','user3@test.com','1996-03-03','33333','서울시 송파구','103호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()), -- pw3
+(4,'user4','$2a$10$hJVLx29DG3p4lEYp/R585u8tPJXp/sd./MTYMVVc6q6fjYjqv.vJG','사용자4','01044444444','user4@test.com','1996-04-04','44444','서울시 영등포구','104호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()), -- pw4
+(5,'user5','$2a$10$o0tvJ6xT/RsaQTQZRW/i1.CoG0ynaAtMRdszaHHZTK.iwaqjbhVWe','사용자5','01055555555','user5@test.com','1996-05-05','55555','서울시 마포구','105호',true,true,false,NULL,'USER','BRONZE',NOW(),NOW()), -- pw5
+(6,'user','$2a$10$RkVfjTmCEJyXK00GMYc2QeixFSPhIjGwaDEr2lVy/oLO71odjBXTi','유저','01012345677','user@naver.com','2025-12-08','12345','성남시 미금역','그린아카데미',false,true,false,NULL,'USER','BRONZE',NOW(),NOW()), -- a
+(7,'admin','$2a$10$ixH.7vAFVidzgcyRB6NGNu4VJiwMqqgPP6b4DxeFXd4Ytv9Tw6wDC','관리자','01012345678','admin@naver.com','2025-12-08','12345','성남시 미금역','그린아카데미',false,true,false,NULL,'ADMIN','VIP',NOW(),NOW()); -- a
 
 
 -- 포인트 히스토리
