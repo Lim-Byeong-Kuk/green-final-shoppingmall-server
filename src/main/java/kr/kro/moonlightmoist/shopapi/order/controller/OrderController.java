@@ -1,7 +1,5 @@
 package kr.kro.moonlightmoist.shopapi.order.controller;
 
-import kr.kro.moonlightmoist.shopapi.order.domain.OrderCoupon;
-import kr.kro.moonlightmoist.shopapi.order.dto.OrderProductRequestDTO;
 import kr.kro.moonlightmoist.shopapi.order.dto.OrderRequestDTO;
 import kr.kro.moonlightmoist.shopapi.order.dto.OrderResponseDTO;
 import kr.kro.moonlightmoist.shopapi.order.service.OrderCouponService;
