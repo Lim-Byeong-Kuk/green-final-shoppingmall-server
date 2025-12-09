@@ -13,7 +13,7 @@ public class PageResponseDTO<E> {
     private List<Integer> pageNumList; //페이지 번호를 표시하기위한 목록
     private PageRequestDTO pageRequestDTO; //요청된 페이지, 페이지에 표시될 데이터 개수
 
-    private boolean prevPageGroup, nextPageGroup; //이전 페이지와 다음 페이지 존재 여부
+    private boolean hasPrevPageGroup, hasNextPageGroup; //이전 페이지와 다음 페이지 존재 여부
     private int totalDataCount, prevPage, nextPage, currentTotalPageCnt, currentPage;
     //totalDataCount = 총 데이터 개수
     //prevPage = 이전 페이지 , nextPage = 다음 페이지
@@ -39,16 +39,16 @@ public class PageResponseDTO<E> {
         //만약 전체 데이터가 105개고 총 페이지가 11이면, 11은 11~20 묶음에 속하는데
         //마지막 페이지가 11인데 20페이지까지 보여줄 필요가 없으므로 11로 고정하기 위해 Math.min으로 조절
 
-        this.prevPageGroup = startPage > 1;
-        this.nextPageGroup = endPage < lastPage;
+        this.hasPrevPageGroup = startPage > 1;
+        this.hasNextPageGroup = endPage < lastPage;
         //이전 페이지가 존재하면 true, 현재 페이지가 2면 2>1이므로 true
         //다음 페이지가 존재하면 true, 현재 페이지가 10, 마짐가 페이지가 11이면 10 < 11 true
 
         this.pageNumList = IntStream.rangeClosed(startPage, endPage).boxed().collect(Collectors.toList());
         //startPage 부터 endPage 까지 페이지 번호 목록 생성
 
-        if (prevPageGroup) this.prevPage = startPage - 1;
-        if (nextPageGroup) this.nextPage = endPage + 1;
+        if (hasPrevPageGroup) this.prevPage = startPage - 1;
+        if (hasNextPageGroup) this.nextPage = endPage + 1;
         //<, > 이전, 다음 버튼 클릭 시 이동할 페이지
         //< 이전 페이지를 누르면 현재 페이지가 3일시 3-1=2 페이지로 이동
         //> 다음 페이지를 누르면 현재 페이지가 5일시 5+1=6 페이지로 이동

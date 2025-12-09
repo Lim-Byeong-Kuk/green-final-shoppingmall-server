@@ -3,6 +3,8 @@ package kr.kro.moonlightmoist.shopapi.product.controller;
 import kr.kro.moonlightmoist.shopapi.aws.service.S3UploadService;
 import kr.kro.moonlightmoist.shopapi.product.dto.*;
 import kr.kro.moonlightmoist.shopapi.product.service.ProductService;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -124,10 +126,12 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ProductResForList>> getProductsByCategory(
-            @RequestParam("categoryId") List<Long> depth3CategoryIds) {
-        List<ProductResForList> productResList = productService.searchProductsByCategory(depth3CategoryIds);
-        return ResponseEntity.ok(productResList);
+    public ResponseEntity<PageResponseDTO<ProductResForList>> getProductsByCategory(
+            @RequestParam("categoryId") List<Long> depth3CategoryIds,
+            @ModelAttribute PageRequestDTO pageRequest
+            ) {
+        PageResponseDTO<ProductResForList> pageResponse = productService.searchProductsByCategory(depth3CategoryIds, pageRequest);
+        return ResponseEntity.ok(pageResponse);
     }
 
     @GetMapping("/{id}")

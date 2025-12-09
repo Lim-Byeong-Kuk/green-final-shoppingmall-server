@@ -11,6 +11,8 @@ import kr.kro.moonlightmoist.shopapi.product.domain.*;
 import kr.kro.moonlightmoist.shopapi.product.dto.*;
 import kr.kro.moonlightmoist.shopapi.product.repository.DetailInfoRepository;
 import kr.kro.moonlightmoist.shopapi.product.repository.ProductRepository;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -100,18 +101,24 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductResForList> searchProductsByCategory(List<Long> depth3CategoryIds) {
+    public PageResponseDTO<ProductResForList> searchProductsByCategory(List<Long> depth3CategoryIds, PageRequestDTO pageRequest) {
 
         Pageable pageable = PageRequest.of(
-                0,
-                24,
+                pageRequest.getPage()-1,
+                pageRequest.getSize(),
                 Sort.by("id").descending()
         );
 
         Page<Product> page = productRepository.findByCategoryIdIn(depth3CategoryIds, pageable);
-        List<ProductResForList> result = page.get().map(product -> product.toDTOForList()).toList();
-        System.out.println("조회된 상품 갯수 = " + result.size());
-        return result;
+        List<ProductResForList> dtoList = page.get().map(product -> product.toDTOForList()).toList();
+
+        PageResponseDTO<ProductResForList> response = PageResponseDTO.<ProductResForList>withAll()
+                .dtoList(dtoList)
+                .pageRequestDTO(pageRequest)
+                .totalDataCount(page.getTotalElements())
+                .build();
+
+        return response;
     }
 
     @Override
