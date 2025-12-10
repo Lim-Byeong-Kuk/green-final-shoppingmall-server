@@ -1,4 +1,4 @@
-package kr.kro.moonlightmoist.shopapi.product.dto;
+package kr.kro.moonlightmoist.shopapi.search.dto;
 
 import lombok.*;
 

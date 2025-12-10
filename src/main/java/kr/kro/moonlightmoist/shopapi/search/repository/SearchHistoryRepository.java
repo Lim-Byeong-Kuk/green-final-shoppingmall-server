@@ -1,7 +1,6 @@
-package kr.kro.moonlightmoist.shopapi.product.repository;
+package kr.kro.moonlightmoist.shopapi.search.repository;
 
-import kr.kro.moonlightmoist.shopapi.product.domain.SearchHistory;
-import kr.kro.moonlightmoist.shopapi.product.dto.SearchPopularKeywordResponseDTO;
+import kr.kro.moonlightmoist.shopapi.search.domain.SearchHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +9,7 @@ import java.util.List;
 
 public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Long> {
 
-    // 회원 ID를 기준으로 최근 검색한 키워드 10개 (중복 제거는 Service에서 처리)
+    //회원 ID를 기준으로 최근 검색한 키워드 10개
     @Query(value = "SELECT * FROM search_histories " +
                    //search_histories 테이블의 모든 컬럼을 가져온다
             "WHERE user_id = :userId " +
@@ -21,13 +20,12 @@ public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Lo
             //중복이 있어도 충분히 가져와서 Service에서 중복 제거 후 최근 10개만 보여주기 위해 20개를 가져온다
     List<SearchHistory> findByUserId10Searched(@Param("userId") Long userId);
 
-    // 세션 식별자를 기준으로 최근 검색한 키워드 10개 (중복 제거는 Service에서 처리)
+    //비회원 식별자를 기준으로 최근 검색한 키워드 10개
     @Query(value = "SELECT * FROM search_histories " +
-            "WHERE session_identifier = :sessionIdentifier " +
-            //해당 세션에 해당하는 검색 기록만 필터링
+            "WHERE guestId = :guest " +
             "ORDER BY created_at DESC " +
             "LIMIT 20", nativeQuery = true)
-    List<SearchHistory> findBySessionIdentifier10Searched(@Param("sessionIdentifier") String sessionIdentifier);
+    List<SearchHistory> findByGuestId10Searched(@Param("guestId") String guestId);
 
     // 실시간 인기 검색어 (최근 24시간 기준)
     @Query(value = "SELECT keyword, COUNT(*) as count " +

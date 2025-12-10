@@ -1,9 +1,9 @@
-package kr.kro.moonlightmoist.shopapi.product.service;
+package kr.kro.moonlightmoist.shopapi.search.service;
 
-import kr.kro.moonlightmoist.shopapi.product.domain.SearchHistory;
-import kr.kro.moonlightmoist.shopapi.product.dto.SearchPopularKeywordResponseDTO;
-import kr.kro.moonlightmoist.shopapi.product.dto.SearchRecentKeywordResponseDTO;
-import kr.kro.moonlightmoist.shopapi.product.repository.SearchHistoryRepository;
+import kr.kro.moonlightmoist.shopapi.search.domain.SearchHistory;
+import kr.kro.moonlightmoist.shopapi.search.dto.SearchPopularKeywordResponseDTO;
+import kr.kro.moonlightmoist.shopapi.search.dto.SearchRecentKeywordResponseDTO;
+import kr.kro.moonlightmoist.shopapi.search.repository.SearchHistoryRepository;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,33 +27,33 @@ public class SearchHistoryServiceImpl implements SearchHistoryService{
     }
 
     @Override
-    public void searchAdd(Long userId, String sessionIdentifier, String keyword) {
+    public void searchAdd(Long userId, String guestId, String keyword) {
 
         User user = getUser(userId);
 
         //SearchHistory 객체 생성
         SearchHistory searchHistory = SearchHistory.builder()
                 .user(user)                             //회원 ID(로그인 회원이면 값이 있고, 비회원이면 null)
-                .sessionIdentifier(sessionIdentifier)   //세션 ID(비회원 식별용)
+                .guestId(guestId)   //세션 ID(비회원 식별용)
                 .keyword(keyword.trim())                //검색어
                 .build();
         searchHistoryRepository.save(searchHistory);
     }
 
     @Override
-    public List<SearchRecentKeywordResponseDTO> getRecentKeywordList(Long userId, String sessionIdentifier) {
+    public List<SearchRecentKeywordResponseDTO> getRecentKeywordList(Long userId, String guestId) {
 
         List<SearchHistory> searchHistories;
 
         User user = getUser(userId);
 
-        // 회원 / 비회원 구분
+        //회원, 비회원 구분
         if (user != null) {
-            // 회원인 경우 userId 기준 최근 검색어 10개
+            //회원인 경우 userId 기준 최근 검색어 10개
             searchHistories = searchHistoryRepository.findByUserId10Searched(userId);
-        } else if (sessionIdentifier != null) {
-            // 비회원인 경우 sessionIdentifier 기준 최근 검색어 10개
-            searchHistories = searchHistoryRepository.findBySessionIdentifier10Searched(sessionIdentifier);
+        } else if (guestId != null) {
+            //비회원인 경우 sessionIdentifier 기준 최근 검색어 10개
+            searchHistories = searchHistoryRepository.findByGuestId10Searched(guestId);
         } else {
             searchHistories = new ArrayList<>();
         }
