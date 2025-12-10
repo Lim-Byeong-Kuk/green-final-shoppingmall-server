@@ -1,6 +1,9 @@
 package kr.kro.moonlightmoist.shopapi.search.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.kro.moonlightmoist.shopapi.product.dto.ProductResForList;
+import kr.kro.moonlightmoist.shopapi.product.dto.ProductSearchCondition;
+import kr.kro.moonlightmoist.shopapi.product.service.ProductService;
 import kr.kro.moonlightmoist.shopapi.search.dto.SearchPopularKeywordResponseDTO;
 import kr.kro.moonlightmoist.shopapi.search.dto.SearchRecentKeywordResponseDTO;
 import kr.kro.moonlightmoist.shopapi.search.service.SearchHistoryService;
@@ -19,6 +22,7 @@ import java.util.List;
 public class SearchHistoryController {
 
     private final SearchHistoryService searchHistoryService;
+    private final ProductService productService;
 
     @PostMapping("/add")
     public ResponseEntity<Void> searchAdd(
@@ -62,5 +66,12 @@ public class SearchHistoryController {
                 searchHistoryService.getPoularKeywordList();
 
         return ResponseEntity.ok(searchPopularKeywordResponseDTO);
+    }
+
+    @GetMapping("/product/{keyword}")
+    public ResponseEntity<List<ProductResForList>> getProductResForList(@RequestParam("keyword") ProductSearchCondition condition) {
+        List<ProductResForList> productResForLists = productService.searchProductsByCondition(condition);
+
+        return ResponseEntity.ok(productResForLists);
     }
 }

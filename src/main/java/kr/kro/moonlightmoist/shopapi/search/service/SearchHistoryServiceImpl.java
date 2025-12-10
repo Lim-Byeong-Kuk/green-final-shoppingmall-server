@@ -31,11 +31,13 @@ public class SearchHistoryServiceImpl implements SearchHistoryService{
 
         User user = getUser(userId);
 
+        if (keyword == null || keyword.trim().isEmpty()) return;
+
         //SearchHistory 객체 생성
         SearchHistory searchHistory = SearchHistory.builder()
-                .user(user)                             //회원 ID(로그인 회원이면 값이 있고, 비회원이면 null)
-                .guestId(guestId)   //세션 ID(비회원 식별용)
-                .keyword(keyword.trim())                //검색어
+                .user(user) //회원 ID(로그인 회원이면 값이 있고, 비회원이면 null)
+                .guestId(guestId) //세션 ID(비회원 식별용)
+                .keyword(keyword.trim()) //검색어
                 .build();
         searchHistoryRepository.save(searchHistory);
     }

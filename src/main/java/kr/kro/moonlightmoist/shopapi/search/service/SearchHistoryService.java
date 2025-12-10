@@ -12,5 +12,4 @@ public interface SearchHistoryService {
     List<SearchRecentKeywordResponseDTO> getRecentKeywordList(Long userId, String guestId);
     //실시간 인기 검색어 목록 가져오기
     List<SearchPopularKeywordResponseDTO> getPoularKeywordList();
-
 }

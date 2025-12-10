@@ -28,5 +28,4 @@ public class SearchHistory extends BaseTimeEntity {
 
     @Column(nullable = false, length = 150)
     private String keyword;
-
 }
