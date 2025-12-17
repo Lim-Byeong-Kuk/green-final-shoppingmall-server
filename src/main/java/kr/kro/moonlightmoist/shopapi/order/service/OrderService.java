@@ -1,5 +1,6 @@
 package kr.kro.moonlightmoist.shopapi.order.service;
 
+import kr.kro.moonlightmoist.shopapi.order.domain.OrderProductStatus;
 import kr.kro.moonlightmoist.shopapi.order.dto.*;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
@@ -19,5 +20,6 @@ public interface OrderService {
     void deleteOneOrder(Long orderId);
     PageResponseDTO<OrderResBySearch> searchOrdersByCondition(OrderSearchCondition condition, String sort, PageRequestDTO pageRequestDTO);
     void comfirmOrder(Long orderId);
+    void changeOrderProductStatus(Long orderId, OrderProductStatus status);
 
 }

@@ -1,9 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.order.controller;
 
-import kr.kro.moonlightmoist.shopapi.order.dto.OrderResBySearch;
-import kr.kro.moonlightmoist.shopapi.order.dto.OrderRequestDTO;
-import kr.kro.moonlightmoist.shopapi.order.dto.OrderResponseDTO;
-import kr.kro.moonlightmoist.shopapi.order.dto.OrderSearchCondition;
+import kr.kro.moonlightmoist.shopapi.order.domain.OrderProductStatus;
+import kr.kro.moonlightmoist.shopapi.order.dto.*;
 import kr.kro.moonlightmoist.shopapi.order.service.OrderCouponService;
 import kr.kro.moonlightmoist.shopapi.order.service.OrderService;
 import kr.kro.moonlightmoist.shopapi.pointHistory.service.PointHistoryService;
@@ -91,5 +89,11 @@ public class OrderController {
     public ResponseEntity<String> confirmOrder(@PathVariable Long orderId) {
         orderService.comfirmOrder(orderId);
         return ResponseEntity.ok("ok");
+    }
+
+    @PutMapping("/{orderId}")
+    public ResponseEntity<String> changeOrderProductStatus(@PathVariable Long orderId, @RequestBody OrderStatusRequest request) {
+        orderService.changeOrderProductStatus(orderId, request.getStatus());
+        return ResponseEntity.ok("주문 상태 변경 완료");
     }
 }
