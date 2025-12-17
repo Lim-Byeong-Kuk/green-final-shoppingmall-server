@@ -283,4 +283,12 @@ public class OrderServiceImpl implements OrderService{
         }
     }
 
+    @Override
+    public void changeOrderProductStatus(Long orderId, OrderProductStatus status) {
+        Order order = orderRepository.findById(orderId).get();
+        for(OrderProduct orderProduct : order.getOrderProducts()) {
+            orderProduct.updateStatus(status);
+        }
+    }
+
 }
