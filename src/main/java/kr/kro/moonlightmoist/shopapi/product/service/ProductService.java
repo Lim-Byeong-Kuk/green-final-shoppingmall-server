@@ -16,10 +16,8 @@ public interface ProductService {
     PageResponseDTO<ProductResForList> searchProductsByCategory(List<Long> depth3CategoryIds, PageRequestDTO pageRequest);
     // 상품 단일 조회
     ProductResForDetail searchProductById(Long id);
-    // 관리자페이지에서 검색 조건으로 상품 리스트 조회
-    List<ProductResForList> searchProductsByCondition(ProductSearchCondition condition);
-    // 검색조건으로 상품 리스트 조회 페이징처리
-    PageResponseDTO<ProductResForList> searchProductsByConditionWithPaging(ProductSearchCondition condition,int page, int size );
+    // 관리자페이지 검색 조건으로 상품 리스트 조회 , 페이징처리
+    PageResponseDTO<ProductResForList> searchProductsByConditionWithPaging(ProductSearchCondition condition, PageRequestDTO pageRequest);
     // 상품 수정
     Long modify(Long id, ProductRequest dto);
 

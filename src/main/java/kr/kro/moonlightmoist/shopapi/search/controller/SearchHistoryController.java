@@ -1,18 +1,16 @@
 package kr.kro.moonlightmoist.shopapi.search.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import kr.kro.moonlightmoist.shopapi.product.dto.ProductResForList;
 import kr.kro.moonlightmoist.shopapi.product.dto.ProductSearchCondition;
 import kr.kro.moonlightmoist.shopapi.product.service.ProductService;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
 import kr.kro.moonlightmoist.shopapi.search.dto.SearchPopularKeywordResponseDTO;
 import kr.kro.moonlightmoist.shopapi.search.dto.SearchRecentKeywordResponseDTO;
 import kr.kro.moonlightmoist.shopapi.search.service.SearchHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,7 +66,9 @@ public class SearchHistoryController {
         ProductSearchCondition condition = new ProductSearchCondition();
         condition.setSearchKeywords(keyword);
 
-        PageResponseDTO<ProductResForList> result = productService.searchProductsByConditionWithPaging(condition, page, size);
+        PageRequestDTO pageRequest = PageRequestDTO.builder().page(page).size(size).build();
+
+        PageResponseDTO<ProductResForList> result = productService.searchProductsByConditionWithPaging(condition, pageRequest);
 
         return ResponseEntity.ok(result);
     }

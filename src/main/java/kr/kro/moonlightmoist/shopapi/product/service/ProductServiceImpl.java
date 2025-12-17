@@ -14,6 +14,7 @@ import kr.kro.moonlightmoist.shopapi.product.repository.ProductRepository;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
 
@@ -163,25 +165,22 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductResForList> searchProductsByCondition(ProductSearchCondition condition) {
-        List<Product> productList = productRepository.search(condition);
-        List<ProductResForList> productsRes = productList.stream().map(p -> p.toDTOForList()).toList();
+    public PageResponseDTO<ProductResForList> searchProductsByConditionWithPaging(ProductSearchCondition condition, PageRequestDTO pageRequest) {
 
-        return productsRes;
-    }
+        Pageable pageable = PageRequest.of(
+                pageRequest.getPage()-1,
+                pageRequest.getSize(),
+                Sort.by("id").descending()
+        );
 
-    @Override
-    public PageResponseDTO<ProductResForList> searchProductsByConditionWithPaging(ProductSearchCondition condition, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Product> pages = productRepository.searchByConditionWithPaging(condition, pageable);
-//        List<ProductResForList> productsRes = productList.stream().map(p -> p.toDTOForList()).toList();
+        Page<Product> page = productRepository.searchByConditionWithPaging(condition, pageable);
 
-        List<ProductResForList> dtoList = pages.get().map(product -> product.toDTOForList()).toList();
+        List<ProductResForList> dtoList = page.get().map(product -> product.toDTOForList()).toList();
 
         PageResponseDTO<ProductResForList> response = PageResponseDTO.<ProductResForList>withAll()
                 .dtoList(dtoList)
-                .pageRequestDTO(PageRequestDTO.builder().page(page).size(size).build())
-                .totalDataCount(pages.getTotalElements())
+                .pageRequestDTO(pageRequest)
+                .totalDataCount(page.getTotalElements())
                 .build();
 
         return response;
