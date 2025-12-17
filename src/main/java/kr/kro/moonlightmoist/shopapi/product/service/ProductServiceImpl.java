@@ -165,14 +165,6 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductResForList> searchProductsByCondition(ProductSearchCondition condition) {
-        List<Product> productList = productRepository.search(condition);
-        List<ProductResForList> productsRes = productList.stream().map(p -> p.toDTOForList()).toList();
-
-        return productsRes;
-    }
-
-    @Override
     public PageResponseDTO<ProductResForList> searchProductsByConditionWithPaging(ProductSearchCondition condition, PageRequestDTO pageRequest) {
 
         Pageable pageable = PageRequest.of(
