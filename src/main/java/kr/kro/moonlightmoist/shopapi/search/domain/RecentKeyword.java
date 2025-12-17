@@ -31,5 +31,6 @@ public class RecentKeyword extends BaseTimeEntity {
     private String keyword;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isVisible = true; // 프론트에서 삭제/숨김 처리용
 }

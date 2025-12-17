@@ -143,13 +143,18 @@ public class ProductController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<ProductResForList>> searchProductsByCondition(
-            @RequestBody ProductSearchCondition condition
+    public ResponseEntity<PageResponseDTO<ProductResForList>> searchProductsByCondition(
+            @RequestBody ProductSearchCondition condition,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
             ) {
+
+        PageRequestDTO pageRequest = PageRequestDTO.builder().page(page).size(size).build();
         System.out.println("condition = " + condition);
+        System.out.println("pageRequest = " + pageRequest);
 
-        List<ProductResForList> products = productService.searchProductsByCondition(condition);
+        PageResponseDTO<ProductResForList> result = productService.searchProductsByConditionWithPaging(condition, pageRequest);
 
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(result);
     }
 }
