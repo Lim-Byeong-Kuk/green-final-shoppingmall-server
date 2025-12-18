@@ -38,7 +38,7 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
         // 1. Contents Query (데이터 쿼리) 생성
         // JPQLQuery 객체로 쿼리 본체를 구성
         JPQLQuery<Order> query = queryFactory
-                .selectFrom(order)
+                .selectFrom(order).distinct()
                 .join(order.orderProducts,orderProduct)
                 .join(orderProduct.productOption, productOption)
                 .join(productOption.product, product)
