@@ -50,6 +50,7 @@ public class SecurityConfig {
                 // 어떤 요청을 허용하고, 막을지를 설정하는 메서드
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/payments/**").permitAll() // 민석 : 결제 오류가 나서 추가함(변경 후 테스트 성공)
                         .requestMatchers("/api/search/**").permitAll()
                         .requestMatchers("/api/user/login").permitAll()
                         .requestMatchers("/api/user/signup").permitAll()
