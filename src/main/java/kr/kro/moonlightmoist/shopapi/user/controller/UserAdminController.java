@@ -1,5 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.user.controller;
 
+import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.dto.UserSearchCondition;
 import kr.kro.moonlightmoist.shopapi.user.service.UserAdminService;
@@ -20,13 +22,24 @@ public class UserAdminController {
 
     private final UserAdminService userAdminService;
 
-    @PostMapping({"/search", "/search/"})
-    public ResponseEntity<List<User>> searchUser(@RequestBody UserSearchCondition condition) {
+    @PostMapping("/search")
+    public ResponseEntity<PageResponseDTO<User>> searchUser(
+            @RequestBody UserSearchCondition condition,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "recent") String sort
+    ) {
         log.info("검색 조건: {}", condition);
 
-        List<User> userList = userAdminService.searchUsers(condition);
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .page(page)
+                .size(size)
+                .sort(sort)
+                .build();
 
-        log.info("검색 결과: {}", userList.size());
-        return ResponseEntity.ok(userList);
+        PageResponseDTO<User> result = userAdminService.searchUsers(condition, pageRequestDTO);
+
+        log.info("검색 결과: 총 {}명, 현재 페이지 {}개", result.getTotalDataCount(), result.getDtoList().size());
+        return ResponseEntity.ok(result);
     }
 }

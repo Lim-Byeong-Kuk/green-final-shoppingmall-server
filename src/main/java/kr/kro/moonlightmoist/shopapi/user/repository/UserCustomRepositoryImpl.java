@@ -1,12 +1,18 @@
 package kr.kro.moonlightmoist.shopapi.user.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
 import kr.kro.moonlightmoist.shopapi.user.domain.QUser;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.domain.UserGrade;
 import kr.kro.moonlightmoist.shopapi.user.dto.UserSearchCondition;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -21,10 +27,10 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
     }
 
     @Override
-    public List<User> search(UserSearchCondition condition) {
+    public Page<User> search(UserSearchCondition condition, Pageable pageable) {
         QUser user = QUser.user;
 
-        List<User> userList = queryFactory
+        JPAQuery<User> query = queryFactory
                 .selectFrom(user)
                 .where(
                         searchFilter(condition.getSearchType(), condition.getSearchKeyword()),
@@ -36,10 +42,37 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
                         smsAgreementFilter(condition.getSmsAgreement()),
                         emailAgreementFilter(condition.getEmailAgreement()),
                         deletedFilter(condition.getUserStatuses())
-                )
-                .fetch();
+                );
 
-        return userList;
+        //정렬
+        if ("old".equals(condition.getSort())) {
+            query.orderBy(user.createdAt.asc());
+        } else {
+            query.orderBy(user.createdAt.desc());
+        }
+
+        //페이징 적용
+        query.offset(pageable.getOffset()).limit(pageable.getPageSize());
+
+        List<User> content = query.fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(user.count())
+                .from(user)
+                .where(
+                        searchFilter(condition.getSearchType(), condition.getSearchKeyword()),
+                        dateFilter(
+                                condition.getStartDate() != null ? condition.getStartDate().atStartOfDay() : null,
+                                condition.getEndDate() != null ? condition.getEndDate().atTime(LocalTime.MAX) : null
+                        ),
+                        gradeFilter(condition.getUserGrade()),
+                        smsAgreementFilter(condition.getSmsAgreement()),
+                        emailAgreementFilter(condition.getEmailAgreement()),
+                        deletedFilter(condition.getUserStatuses())
+                );
+
+        Page<User> page = PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        return page;
     }
 
     //검색어 필터 (이름, 핸드폰 번호 등)
@@ -56,7 +89,8 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
         } else if (searchType.equals("아이디")) {
             return user.loginId.contains(keyword);
         } else if (searchType.equals("핸드폰(네자리)")) {
-            return user.phoneNumber.contains(keyword);
+            //핸드폰 끝 4자리만
+            return user.phoneNumber.endsWith(keyword);
         }
 
         return null;

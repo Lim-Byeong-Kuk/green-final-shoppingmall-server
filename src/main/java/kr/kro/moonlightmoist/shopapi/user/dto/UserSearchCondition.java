@@ -21,4 +21,5 @@ public class UserSearchCondition {
     private Boolean smsAgreement; //SMS 수신 동의 (null:전체, true:수신, false:거부)
     private Boolean emailAgreement; //이메일 수신 동의 (null:전체, true:수신, false:거부)
     private List<Boolean> userStatuses; //회원 상태(deleted 필드 기준: false-정상, true-탈퇴)
+    private String sort; //최신순, 오래된순 정렬
 }

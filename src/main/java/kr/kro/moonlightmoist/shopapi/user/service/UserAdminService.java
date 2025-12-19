@@ -1,5 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.user.service;
 
+import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
+import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.domain.UserGrade;
 import kr.kro.moonlightmoist.shopapi.user.dto.UserSearchCondition;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public interface UserAdminService {
     //회원 조회
-    List<User> searchUsers(UserSearchCondition condition);
+    PageResponseDTO<User> searchUsers(UserSearchCondition condition, PageRequestDTO pageRequestDTO);
 //    SMS 발송
 //    void sendSmsToUsers(List<Long> userIds, String message);
 //    이메일 발송
