@@ -19,8 +19,11 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey; // JWT 서명에 사용할 비밀키
 
-    @Value("${jwt.expiration}")
-    private Long tokenValidityInMilliseconds; // 토큰 유효시간 ( 밀리초 )
+    @Value("${jwt.access-expiration}")
+    private Long accessTokenValidityInMilliseconds; // 엑세스토큰 유효시간 ( 밀리초 )
+
+    @Value("${jwt.refresh-expiration}")
+    private Long refreshTokenValidityInMilliseconds; // 리프레쉬토큰 유효시간 ( 밀리초 )
 
     // 사용자정보 Authentication(인증)을 파라미터로 받아야 해당 정보를 가지고 토큰을 생성 할 수 있다.
     // 현재 시간과 만료시간을 지정해야한다.
@@ -30,15 +33,17 @@ public class JwtTokenProvider {
     // - principal: CustomUserDetails 객체
     // - credentials: 비밀번호 (보안상 제거됨)
     // - authorities: [ROLE_USER]
-    // 이 모든 정보가 들어있음!
-    public String generateToken (Authentication authentication) {
+    
+    
+    //엑세스 토큰 생성
+    public String generateAccessToken (Authentication authentication) {
 
         // 인증 데이터에서CustomUserDetails를 꺼낸다. authentication은 Object Type이라서, 다운캐스팅 적용
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         Date now = new Date(); // 지금 현재 시간
         // 현재시간 + 유효기간시간 = 남은시간 적용
-        Date expiryDate = new Date(now.getTime() + tokenValidityInMilliseconds);
+        Date expiryDate = new Date(now.getTime() + accessTokenValidityInMilliseconds); // 30분
 
         // 토큰생성
         return Jwts.builder() // 해당 정보로 토큰을 생성해야하기 때문
@@ -50,7 +55,22 @@ public class JwtTokenProvider {
                 .expiration(expiryDate) // 토큰 만료시간 ✅ 언제까지 유효한지 밀리초 적용
                 .signWith(getSigningKey()) // 서명 (변조 방지?) ✅ 토큰이 변조되지 않았음을 증명하는 장치 서버만 가진 비밀키로 검증하기 위함
                 .compact(); // 문자열로 반환하는 메서드
-        // 여기까지가 토큰 생성 로직
+    }
+
+    // 리프레시 토큰생성
+    public String generateRefreshToken(Authentication authentication) {
+
+        CustomUserDetails userDetails  = (CustomUserDetails) authentication.getPrincipal();
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + refreshTokenValidityInMilliseconds); // 1일
+
+        return Jwts.builder()
+                .subject(userDetails.getUser().getLoginId()) // 로그인한 사용자
+                .claim("userId",userDetails.getUser().getId()) // 로그인한 사용자의 id (pk)
+                .issuedAt(now) // 생성 시간
+                .expiration(expiryDate) // 유효 시간
+                .signWith(getSigningKey()) // 키 검증
+                .compact();
     }
 
     // 로그인Id 추출로직? ✅ 어떤 사용자의 토큰인지

@@ -2,9 +2,12 @@ package kr.kro.moonlightmoist.shopapi.user.controller;
 
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.kro.moonlightmoist.shopapi.security.CustomUserDetails;
 import kr.kro.moonlightmoist.shopapi.security.JwtTokenProvider;
+import kr.kro.moonlightmoist.shopapi.security.RefreshToken;
+import kr.kro.moonlightmoist.shopapi.security.RefreshTokenRepository;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.dto.*;
 import kr.kro.moonlightmoist.shopapi.user.repository.UserRepository;
@@ -23,6 +26,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +34,6 @@ import java.util.Map;
 @RequiredArgsConstructor // Final 생성
 @RequestMapping("/api/user") // 해당 컨트롤러가 받을 경로
 @Slf4j
-//@CrossOrigin(origins = "http://localhost:5137")
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
@@ -38,6 +41,8 @@ public class UserController {
     private final AuthenticationManager authenticationManager; // 12-10 추가
     private final JwtTokenProvider jwtTokenProvider; // 12-12 추가
     private final UserCouponService userCouponService;
+    private final RefreshTokenRepository refreshTokenRepository;
+
 
     @PostMapping("/signup") // RequestMapping + ??
     public ResponseEntity<Map<String,Object>> userResister(@RequestBody UserSignUpRequest userSignUpRequest) {
@@ -55,6 +60,7 @@ public class UserController {
         response.put("coupon","💕신규쿠폰이 발급되었습니다💕");
         return ResponseEntity.ok(response);
     }
+
 
 
     @PostMapping("/login")
@@ -77,32 +83,42 @@ public class UserController {
 //        SecurityContext에 저장하기.
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String jwtToken = jwtTokenProvider.generateToken(authentication);
+            String accessToken = jwtTokenProvider.generateAccessToken(authentication); // 사용자정보로 엑세스토큰 생성
+            String refreshToken = jwtTokenProvider.generateRefreshToken(authentication); // 사용자정보로 리프레시토큰 생성
 
-//        사용자 정보
-//        Authentication 인터페이스의 정의상 getPrincipal() 메서드의 반환 타입은 가장 일반적인 타입인 Object 이다.
-//        이유는 getPrincipal()에 들어갈 수 있는 객체의 종류가 매우 다양하기 때문. ID 문자열일 수도 있고,
-//        OAuth2 토큰일 수도 있으며, 사용자님의 CustomUserDetails 객체일 수도 있기때문
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            // 해당 정보의 사용자정보를 다운캐스팅해서 꺼냄 *Principal의 경우 일반적으로 Object 타입
 
             log.info("로그인 성공 로그인아이디: {}, JWT 생성 및 발급 완료", userDetails.getUser().getLoginId());
-            
-            // 세션 방식
-//            session.setAttribute("SPRING_SECURITY_CONTEXT",SecurityContextHolder.getContext());
-//            log.info("로그인 성공 LoginId : {}, SessionId : {}", userDetails.getUsername(), session.getId());
 
-            Cookie cookie = new Cookie("accessToken", jwtToken);
-            cookie.setHttpOnly(true); // JavaScript 접근 불가
-            cookie.setSecure(false); // HTTPS 로만
-            cookie.setPath("/"); // 모든경로
-            cookie.setMaxAge(60 * 60 * 24); // 1일 설정 만료일 설정
-            httpServletResponse.addCookie(cookie);
+            Cookie accesscookie = new Cookie("accessToken", accessToken); // 해당 정보를 가진 쿠키를 생성
+            accesscookie.setHttpOnly(true); // JavaScript 접근 불가
+            accesscookie.setSecure(false); // HTTPS true/false로 설정
+            accesscookie.setPath("/"); // 모든경로
+            accesscookie.setMaxAge(60 * 30); // 30분 설정 만료일 설정
+            httpServletResponse.addCookie(accesscookie); // 해당 repsonse에 쿠키를 추가
+
+            Cookie refreshcookie = new Cookie("refreshToken", refreshToken); // 해당 정보를 가진 쿠키 생성
+            refreshcookie.setHttpOnly(true); // JavaScript 접근 불가
+            refreshcookie.setSecure(false); // HTTPS true/false로 설정
+            refreshcookie.setPath("/"); // 모든경로
+            refreshcookie.setMaxAge(60 * 60 * 24); // 1일 설정 만료일 설정
+            httpServletResponse.addCookie(refreshcookie); // 해당 response에 쿠키를 추가
+
+            // 기존에 있던 Token 삭제. 
+            refreshTokenRepository.deleteByUserId(userDetails.getUser().getId());
+
+            // 방금 생성한 토큰 저장
+            refreshTokenRepository.save(new RefreshToken(
+                    userDetails.getUser().getId(),
+                    refreshToken,
+                    LocalDateTime.now()
+            ));
 
 //         응답 로직
             Map<String, Object> LoginResponse = new HashMap<>();
             LoginResponse.put("success", true);
-            LoginResponse.put("massage", "로그인 성공");
-//            response.put("token", jwtToken);
+            LoginResponse.put("message", "로그인 성공");
             LoginResponse.put("user", UserLoginResponse.builder()
                     .id(userDetails.getUser().getId())
                     .loginId(userDetails.getUsername())
@@ -116,9 +132,94 @@ public class UserController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("success",false);
-            response.put("massage","아이디 또는 비밀번호가 일치하지 않습니다.");
+            response.put("message","아이디 또는 비밀번호가 일치하지 않습니다.");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+
+    // 토큰 만료 시, 리프레시 토큰 재발급.
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, Object>> refresh(
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        try {
+            log.info("토큰 갱신 요청");
+
+
+            // 리퀘스트에서 쿠키의 토큰을 추출
+            String refreshToken = getRefreshTokenFromCookie(request);
+
+            // 추출한 토큰이 없다면 예외
+            if (refreshToken == null){
+                log.warn("Refresh Token이 없습니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            // 토큰이 있을경우
+            // 해당 토큰의 유효성을 검사
+            if (!jwtTokenProvider.validateToken(refreshToken)) {
+                log.warn("유효하지 않은 Refresh Token 입니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            // 유효성 검사까지 완료되었다면 토큰을 찾아서 꺼내온다.
+            RefreshToken storedToken = refreshTokenRepository.findByToken(refreshToken).orElse(null);
+
+            // DB에서 꺼낸 토큰이 없다면
+            if (storedToken == null) {
+                log.info("DB에 존재하지않는 Refresh Token 입니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            if ( storedToken.isExpired()) {
+                log.warn("만료된 refresh Toekn 입니다.");
+                refreshTokenRepository.delete(storedToken);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            //사용자정보 조회해서 DB에서 꺼내오기
+            User findUser = userRepository.findById(storedToken.getUserId()).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+            CustomUserDetails userDetails = new CustomUserDetails(findUser);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            String newAccessToken = jwtTokenProvider.generateAccessToken(authentication);
+            String newRefreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+
+            log.info("새 토큰 발급 완료 : userId = {}", findUser.getLoginId());
+
+            refreshTokenRepository.delete(storedToken);
+
+            refreshTokenRepository.save(new RefreshToken(
+                    findUser.getId(),
+                    newRefreshToken,
+                    LocalDateTime.now()
+            ));
+
+            // 새 토큰을 쿠키에 설정
+            Cookie newAccessCookie = new Cookie("accessToken", newAccessToken);
+            newAccessCookie.setHttpOnly(true);
+            newAccessCookie.setSecure(false);
+            newAccessCookie.setPath("/");
+            newAccessCookie.setMaxAge(60 * 30); // 30분
+            response.addCookie(newAccessCookie);
+
+            Cookie newRefreshCookie = new Cookie("refreshToken", newRefreshToken);
+            newRefreshCookie.setHttpOnly(true);
+            newRefreshCookie.setSecure(false);
+            newRefreshCookie.setPath("/");
+            newRefreshCookie.setMaxAge(60 * 60 * 24 ); // 1일
+            response.addCookie(newRefreshCookie);
+
+            // 응답
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("message", "토큰이 갱신되었습니다.");
+
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            log.error("토큰 갱신 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
@@ -128,12 +229,25 @@ public class UserController {
 
         log.info("로그아웃 요청 호출");
 
-        Cookie cookie =  new Cookie("accessToken", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false); // HTTPS에서만 사용가능,
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        httpServletResponse.addCookie(cookie);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null && authentication.getPrincipal() instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            refreshTokenRepository.deleteByUserId(userDetails.getUser().getId());
+        }
+
+        Cookie accessToken =  new Cookie("accessToken", null);
+        accessToken.setHttpOnly(true);
+        accessToken.setSecure(false);
+        accessToken.setPath("/");
+        accessToken.setMaxAge(0);
+        httpServletResponse.addCookie(accessToken);
+
+        Cookie refreshToken =  new Cookie("refreshToken", null);
+        refreshToken.setHttpOnly(true);
+        refreshToken.setSecure(false);
+        refreshToken.setPath("/");
+        refreshToken.setMaxAge(0);
+        httpServletResponse.addCookie(refreshToken);
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
@@ -144,12 +258,14 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+
     @GetMapping("/currentUser")
     public ResponseEntity<Map<String, Object>> currentUser () {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if( authentication == null || !authentication.isAuthenticated()) {
+        if( authentication == null
+                || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         System.out.println("여기는 currentUser 컨트롤러");
@@ -162,11 +278,11 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("user", UserLoginResponse.builder()
-                        .id(userDetails.getUser().getId())
-                        .loginId(userDetails.getUser().getLoginId())
-                        .name(userDetails.getUser().getName())
-                        .userRole(userDetails.getUser().getUserRole())
-                        .build());
+                .id(userDetails.getUser().getId())
+                .loginId(userDetails.getUser().getLoginId())
+                .name(userDetails.getUser().getName())
+                .userRole(userDetails.getUser().getUserRole())
+                .build());
         log.info("여기는 로그인된 사용자정보 반환: {}",response);
 
         return ResponseEntity.ok(response);
@@ -230,6 +346,19 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    private String getRefreshTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    log.info("Refresh Token 추출 완료");
+                    return cookie.getValue();
+                }
+            }
+        }
+        log.warn("쿠키에서 Refresh Token을 찾을 수 없습니다.");
+        return null;
+    }
 
 
 }

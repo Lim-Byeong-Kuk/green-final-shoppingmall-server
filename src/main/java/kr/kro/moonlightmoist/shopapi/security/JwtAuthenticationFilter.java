@@ -39,26 +39,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // 상속
     ) throws ServletException, IOException {
         try { // 인가를 할때 문제가 발생할 수 있기때문에 try-catch 사용
             // 요청 헤더에서 토큰 추출
-            String jwt = getJwtFromRequest(request);
+            String jwt = getJwtFromRequest(request); // 쿠키만 추출하는 함수
 
             // 검증
             if(StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 // jwt에
                 // 토큰에서 로그인아이디 추출
-                String loginId = jwtTokenProvider.getLoginIdFromToken(jwt);
+                String loginId = jwtTokenProvider.getLoginIdFromToken(jwt); // 로그인아이디를 꺼내오는 함수 실행
                 log.info("여기는 필터체인 토큰의 로그인 아이디 추출 : {}", loginId);
 
                 // DB에서 사용자 정보 조회
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
+                // loginId로 DB에서 사용자를 찾아서 반환하는 타입을 UserDetails로 변환 *UserDetailService의 오버라이드 기능.
                 log.info("여기는 필터체인 DB에서 사용자정보 추출 : {}", userDetails);
 
                 // Authentication 객체 생성
                 // 세션 방식과 동일하게 authentication에 담을 객체를 생성해준다.
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
+                                userDetails, // 유저정보
+                                null, // 인증정보
+                                userDetails.getAuthorities() // 권한정보
                         );
 
                 // 요청정보를 Authentication에 추가해야한다.
@@ -90,33 +91,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // 상속
     private String getJwtFromRequest (HttpServletRequest request) {
 
         // HTTP ONLY 쿠키 방식 꺼내오기.
-        Cookie[] cookies = request.getCookies();
-        if( cookies != null) {
-            for (Cookie cookie : cookies) {
-                if("accessToken".equals(cookie.getName())){
-                    String jwtToken = cookie.getValue();
-                    log.info("여기는 쿠키에 있는 토큰 추출 완료:{}", jwtToken);
-                    return jwtToken;
+        Cookie[] cookies = request.getCookies(); // 요청에서 쿠키를 꺼내면 쿠키는 배열형태 여러가지 쿠키들이 있음
+        if( cookies != null) { // 꺼낸 쿠키배열이 null이 아니라면
+            for (Cookie cookie : cookies) { // 반복문으로 cookie들을 enhance 문으로 실행
+                if("accessToken".equals(cookie.getName())){ // accessToken과 쿠키의 이름이 같으면
+                    String jwtToken = cookie.getValue(); // 해당 쿠키를 꺼내서 jwtToken으로 저장
+                    log.info("여기는 쿠키에 있는 토큰 추출 완료:{}", jwtToken); 
+                    return jwtToken; // 해당 토큰을 반환
                 }
+            }
         }
-
-
-
-        // 아래 방식은 JWT 토큰을 헤더에 보냈을 경우 해당 토큰을 추출하기 위한 로직
-        // 해당 Request Header를 가져오는 메서드를 사용해서 Authorization(인가)에 대한 속성을 가져옴
-        // JSON 형태로 보내기때문에 해당 Value는 String이고, 그 문자는 곧 Bearer 토큰인 셈.
-//        String bearerToken = request.getHeader("Authorization"); // 인가 키값
-//        log.info("여기는 Bearer 토큰 변환 전 : {} ", bearerToken);
-        // StringUtils의 hasText 메서드를 사용해서 bearerToken이 있는지를 검증하고
-        // bearerToken에 startsWith 메서드를 사용해서 "Bearer "지정한 문자로 시작하는지를 확인
-//        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-//            // 해당 조건문이 True 일 때, bearerToen에 subString으로 7번째까지 제거 후 그 뒤의 토큰만 반환하게 만듬.
-//            // subString은 문자열 특정부분 자르기
-//            log.info("여기는 Bearer 토큰 변환 완료 : {} ", bearerToken.substring(7));
-//            return bearerToken.substring(7); // "Bearer " 제거 후 토큰만 반환
-
-        }
-        log.info("여기는 JWT 토큰 추출 실패: 쿠키나 Authorization 헤더에서 토큰을 찾지 못함");
+        log.info("여기는 JWT 토큰 추출 실패: 쿠키나 Authorization 헤더에서 토큰을 찾지 못함 ");
         return null;
     }
 

@@ -39,23 +39,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-//    @Override
-//    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
-//        Optional<User> findLoginId = userRepository.findByLoginId(userLoginRequest.getLoginId());
-//        if (findLoginId.isPresent()) {
-//            User user = findLoginId.get();
-//
-//            if (!passwordEncoder.matches(userLoginRequest.getPassword(),user.getPassword())) {
-//                throw new IllegalArgumentException("비밀번호가 일치 하지 않습니다.");
-//            }
-//            return UserLoginResponse.builder()
-//                    .id(user.getId())
-//                    .loginId(user.getLoginId())
-//                    .name(user.getName())
-//                    .build();
-//        }
-//        throw new IllegalArgumentException("없는 아이디 입니다.");
-//    }
 
     @Override
     public boolean checkLoginId(String loginId) {
