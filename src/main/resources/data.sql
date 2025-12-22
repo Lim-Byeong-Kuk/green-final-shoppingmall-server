@@ -592,10 +592,10 @@ INSERT INTO products (id, product_detail_info_id, brand_id, category_id, deliver
 (136, 136, 83, 60, 2, FALSE, '[단독기획]에뛰드 순정 약산성 5.5 진정 토너 700ml 대용량 기획(350ml+리필350ml)', 'NONE', '[단독기획]에뛰드 순정 약산성 5.5 진정 토너 700ml 대용량 기획(350ml+리필350ml)', 'EXPOSURE', 'ON_SALE', '설명없음', true, false, '2025-07-29 01:21:47', '2025-07-29 01:21:47');
 
 UPDATE products SET total_sales_count = 5
-WHERE id IN (101, 82, 73, 29, 33, 24);
+WHERE id IN ( 29, 33, 13);
 
 UPDATE products SET total_sales_count = 10
-WHERE id IN (16, 13, 9, 8);
+WHERE id IN (16, 9, 24, 82, 101, 33, 97, 73);
 
 INSERT INTO product_main_images (product_id, image_type, display_order, image_url) VALUES
 (1, 'THUMBNAIL', 0, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0018/A00000018491610ko.jpg?l=ko&QT=85&SF=webp&sharpen=1x0.5'),
