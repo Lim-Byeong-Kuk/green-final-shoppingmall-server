@@ -71,14 +71,14 @@ public class NotificationServiceImpl implements NotificationService{
         try {
             messageService.send(messages);
         } catch (NurigoMessageNotReceivedException e) {
-            log.info("일부 수신자에게 발송 실패 : {}", e.getFailedMessageList());
-            throw new RuntimeException(e);
+            log.info("수신자에게 발송 실패 : {}", e.getFailedMessageList());
+            throw new SmsNotReceivedException();
         } catch (NurigoEmptyResponseException e) {
             log.info("CoolSms 로부터 응답 없음 : {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new SmsNoResponseException();
         } catch (NurigoUnknownException e) {
             log.info("메시지 발송 요청 중 예기치 않은 오류 발생 : {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new SmsUnknownException();
         }
     }
 }
