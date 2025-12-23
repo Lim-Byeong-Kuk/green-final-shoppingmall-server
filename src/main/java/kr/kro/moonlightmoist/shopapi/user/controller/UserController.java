@@ -5,9 +5,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.kro.moonlightmoist.shopapi.security.CustomUserDetails;
-import kr.kro.moonlightmoist.shopapi.security.JwtTokenProvider;
-import kr.kro.moonlightmoist.shopapi.security.RefreshToken;
-import kr.kro.moonlightmoist.shopapi.security.RefreshTokenRepository;
+import kr.kro.moonlightmoist.shopapi.security.jwt.JwtTokenProvider;
+import kr.kro.moonlightmoist.shopapi.security.jwt.RefreshToken;
+import kr.kro.moonlightmoist.shopapi.security.jwt.RefreshTokenRepository;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.dto.*;
 import kr.kro.moonlightmoist.shopapi.user.repository.UserRepository;
@@ -340,9 +340,6 @@ public class UserController {
     public ResponseEntity<UserWithdrawalResponse> withdrawUser (@RequestBody UserWithdrawalRequest request) {
         UserWithdrawalResponse response = userWithdrawalService.withdrawUser(request);
         log.info("여기는 회원탈퇴 컨트롤러 : {} ", response);
-        if(!response.isSuccess()){
-            return ResponseEntity.badRequest().body(response);
-        }
         return ResponseEntity.ok(response);
     }
 

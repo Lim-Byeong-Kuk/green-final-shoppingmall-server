@@ -1,4 +1,4 @@
-package kr.kro.moonlightmoist.shopapi.security;
+package kr.kro.moonlightmoist.shopapi.security.jwt;
 
 import com.google.gson.Gson;
 import jakarta.servlet.FilterChain;
@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.kro.moonlightmoist.shopapi.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

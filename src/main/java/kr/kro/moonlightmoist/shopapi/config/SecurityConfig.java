@@ -1,6 +1,8 @@
 package kr.kro.moonlightmoist.shopapi.config;
 
-import kr.kro.moonlightmoist.shopapi.security.JwtAuthenticationFilter;
+import kr.kro.moonlightmoist.shopapi.security.handler.CustomAccessDeniedHandler;
+import kr.kro.moonlightmoist.shopapi.security.handler.CustomAuthenticationEntryPoint;
+import kr.kro.moonlightmoist.shopapi.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean // "이 메소드가 반환하는 객체를 스프링이 관리해줘"
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,6 +42,11 @@ public class SecurityConfig {
                 // 세션 설정
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 무상태, 세션 생성 안함.
+                )
+
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
 
                 // 만든 JWT 필터를 Spring Secuirity에 추가.

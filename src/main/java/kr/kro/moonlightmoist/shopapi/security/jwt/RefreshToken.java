@@ -1,4 +1,4 @@
-package kr.kro.moonlightmoist.shopapi.security;
+package kr.kro.moonlightmoist.shopapi.security.jwt;
 
 
 import jakarta.persistence.*;
