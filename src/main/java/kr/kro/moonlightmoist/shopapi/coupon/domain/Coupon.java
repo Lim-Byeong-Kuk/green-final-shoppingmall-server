@@ -25,6 +25,9 @@ public class Coupon extends BaseTimeEntity {
     private String name;
 
     @Column(nullable = false)
+    private String couponDescription;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private IssueType issueType;
 
@@ -101,6 +104,7 @@ public class Coupon extends BaseTimeEntity {
         return CouponDto.builder()
                 .id(this.id)
                 .name(this.name)
+                .couponDescription(this.couponDescription)
                 .issueType(this.issueType)
                 .autoIssueType(this.autoIssueType)
                 .autoIssueTrigger(this.autoIssueTrigger)
@@ -126,6 +130,7 @@ public class Coupon extends BaseTimeEntity {
 
     public void changeCoupon(CouponDto dto) {
         this.name = dto.getName();
+        this.couponDescription = dto.getCouponDescription();
         this.issueType = dto.getIssueType();
         this.autoIssueType = dto.getAutoIssueType();
         this.autoIssueTrigger = dto.getAutoIssueTrigger();

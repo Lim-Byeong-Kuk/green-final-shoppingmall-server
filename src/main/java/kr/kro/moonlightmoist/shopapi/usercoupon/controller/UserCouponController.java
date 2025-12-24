@@ -1,6 +1,7 @@
 package kr.kro.moonlightmoist.shopapi.usercoupon.controller;
 
 import kr.kro.moonlightmoist.shopapi.usercoupon.dto.CouponIssueReq;
+import kr.kro.moonlightmoist.shopapi.usercoupon.dto.CouponsIssueReq;
 import kr.kro.moonlightmoist.shopapi.usercoupon.dto.UserCouponRes;
 import kr.kro.moonlightmoist.shopapi.usercoupon.service.UserCouponService;
 import lombok.RequiredArgsConstructor;
@@ -42,4 +43,12 @@ public class UserCouponController {
         return ResponseEntity.ok("ok");
     }
 
+    @PostMapping("/manual")
+    public ResponseEntity<String> issueManualCoupon(@RequestBody CouponsIssueReq dto) {
+        System.out.println("userId = " + dto.getUserIds());
+        System.out.println("couponIds = " + dto.getCouponIds());
+
+        userCouponService.issueManualCoupons(dto.getUserIds(), dto.getCouponIds());
+        return ResponseEntity.ok("ok");
+    }
 }

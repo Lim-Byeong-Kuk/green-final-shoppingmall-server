@@ -45,6 +45,7 @@ public class UserCoupon extends BaseTimeEntity {
 
     public void useCoupon() {
         this.usageStatus = CouponUsageStatus.USED;
+        this.usedAt = LocalDateTime.now();
     }
 
     public void recoverCoupon() {

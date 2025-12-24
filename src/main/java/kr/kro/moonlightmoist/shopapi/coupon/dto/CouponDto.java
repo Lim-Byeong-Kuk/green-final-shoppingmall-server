@@ -18,6 +18,7 @@ public class CouponDto {
     private Long id;
     @JsonProperty("couponName")
     private String name;
+    private String couponDescription;
     private IssueType issueType;
     private AutoIssueType autoIssueType;
     private AutoIssueTrigger autoIssueTrigger;
@@ -46,6 +47,7 @@ public class CouponDto {
         return Coupon.builder()
                 .id(this.id)
                 .name(this.name)
+                .couponDescription(this.couponDescription)
                 .issueType(this.issueType)
                 .autoIssueType(this.autoIssueType)
                 .autoIssueTrigger(this.autoIssueTrigger)

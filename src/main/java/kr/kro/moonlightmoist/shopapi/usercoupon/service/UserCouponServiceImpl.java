@@ -1,5 +1,6 @@
 package kr.kro.moonlightmoist.shopapi.usercoupon.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import kr.kro.moonlightmoist.shopapi.coupon.domain.Coupon;
 import kr.kro.moonlightmoist.shopapi.coupon.exception.InvalidCouponCodeException;
@@ -85,5 +86,26 @@ public class UserCouponServiceImpl implements UserCouponService{
                 .build();
 
         userCouponRepository.save(userCoupon);
+    }
+
+    @Override
+    @Transactional
+    public void issueManualCoupons(List<Long> userIds, List<Long> couponIds) {
+
+        for (Long userId : userIds ) {
+            for (Long couponId : couponIds) {
+                if (userCouponRepository.findByUserIdAndCouponId(userId, couponId).isPresent()) {
+                    // 이미 해당 쿠폰을 가지고 있을 경우
+                } else {
+                    User user = userRepository.findById(userId).orElseThrow(EntityExistsException::new);
+                    Coupon coupon = couponRepository.findById(couponId).orElseThrow(EntityNotFoundException::new);
+                    UserCoupon userCoupon = UserCoupon.builder()
+                            .user(user)
+                            .coupon(coupon)
+                            .build();
+                    userCouponRepository.save(userCoupon);
+                }
+            }
+        }
     }
 }

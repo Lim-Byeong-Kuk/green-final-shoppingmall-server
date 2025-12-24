@@ -56,4 +56,10 @@ public class CouponController {
         return ResponseEntity.ok("ok");
     }
 
+    @GetMapping("/manual")
+    public ResponseEntity<List<CouponDto>> findManualCoupons() {
+        List<CouponDto> coupons = couponService.getManualCoupons();
+        return ResponseEntity.ok(coupons);
+    }
+
 }

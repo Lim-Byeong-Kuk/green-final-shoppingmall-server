@@ -11,4 +11,5 @@ public interface CouponService {
     CouponDto findCoupon(Long id);
     Long modifyCoupon(CouponDto dto);
     void deleteCoupon(Long id);
+    List<CouponDto> getManualCoupons();
 }

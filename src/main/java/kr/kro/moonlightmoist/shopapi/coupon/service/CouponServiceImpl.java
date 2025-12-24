@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -52,5 +53,12 @@ public class CouponServiceImpl implements CouponService{
     public void deleteCoupon(Long id) {
         Coupon coupon = couponRepository.findById(id).orElseThrow(EntityExistsException::new);
         coupon.deleteCoupon();
+    }
+
+    @Override
+    public List<CouponDto> getManualCoupons() {
+        List<CouponDto> coupons = couponRepository.findManualCoupons(LocalDateTime.now())
+                .stream().map(c -> c.toDto()).toList();
+        return coupons;
     }
 }
