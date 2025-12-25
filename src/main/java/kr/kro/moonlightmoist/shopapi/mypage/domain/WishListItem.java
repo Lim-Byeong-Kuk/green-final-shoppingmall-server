@@ -15,7 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class WishListItem extends BaseTimeEntity {
+public class WishListItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
