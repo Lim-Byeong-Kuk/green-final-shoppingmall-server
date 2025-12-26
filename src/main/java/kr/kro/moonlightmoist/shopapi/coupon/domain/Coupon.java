@@ -88,7 +88,7 @@ public class Coupon extends BaseTimeEntity {
 
     @Column(nullable = true)
     @Builder.Default
-    private Integer issueCount = 0;
+    private Long issueCount = 0L;
 
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
