@@ -8,4 +8,5 @@ public interface InquiryService {
     InquiryListDTO getInquiryList(String loginId);
     InquiryModifyResponse modifyInquiry(Long id, InquiryModifyRequest request, String loginId);
     void deleteInquiry(Long id, String loginId);
+    AdminInquiryListDTO getAdminInquiries (String status, String type, String keyword);
 }

@@ -30,14 +30,14 @@ public class Inquiry extends BaseTimeEntity {
     @Column(nullable = false)
     private InquiryType inquiryType;  // 문의 유형
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;   // 문의내용
 
     @Builder.Default
     @Column(name = "is_answered")
     private boolean answered = false;   // 답변 완료여부
 
-    @Column(nullable = true) // 처음엔 답변이 없음으로 true
+    @Column(nullable = true, columnDefinition = "TEXT") // 처음엔 답변이 없음으로 true
     private String answerContent; // 답변내용
 
     @Builder.Default
