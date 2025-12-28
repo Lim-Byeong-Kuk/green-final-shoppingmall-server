@@ -5,13 +5,16 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.kro.moonlightmoist.shopapi.common.exception.BusinessException;
+import kr.kro.moonlightmoist.shopapi.pointHistory.service.PointHistoryService;
 import kr.kro.moonlightmoist.shopapi.security.CustomUserDetails;
 import kr.kro.moonlightmoist.shopapi.security.jwt.JwtTokenProvider;
 import kr.kro.moonlightmoist.shopapi.security.jwt.RefreshToken;
 import kr.kro.moonlightmoist.shopapi.security.jwt.RefreshTokenRepository;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
 import kr.kro.moonlightmoist.shopapi.user.dto.*;
+import kr.kro.moonlightmoist.shopapi.user.exception.DuplicateEmailException;
 import kr.kro.moonlightmoist.shopapi.user.exception.DuplicateLoginIdException;
+import kr.kro.moonlightmoist.shopapi.user.exception.DuplicatePhoneNumberException;
 import kr.kro.moonlightmoist.shopapi.user.exception.InvalidTokenException;
 import kr.kro.moonlightmoist.shopapi.user.repository.UserRepository;
 import kr.kro.moonlightmoist.shopapi.user.service.UserService;
@@ -47,14 +50,17 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider; // 12-12 추가
     private final UserCouponService userCouponService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final PointHistoryService pointHistoryService;
 
 
     @PostMapping("/signup") // RequestMapping + ??
     public ResponseEntity<Map<String,Object>> userResister(@RequestBody UserSignUpRequest userSignUpRequest) {
         // @RequestBody JSON 데이터를 Java 객체로 자동 변환해주는 어노테이션
         try {
+
             User registeredUser = userRepository.save(userService.registerUser(userSignUpRequest));
             Long registeredCouponUser = userCouponService.issue(registeredUser.getId(), 1L);
+
             log.info("회원가입 컨트롤러 신규쿠폰 유저 등록완료 : {} ", registeredCouponUser);
             log.info("회원가입 컨트롤러 신규쿠폰 등록완료된 유저는 : {} ", registeredUser.getLoginId());
             System.out.println("======================================================================");
@@ -62,16 +68,37 @@ public class UserController {
             log.info("DB에서 꺼낸 저장된 정보 => {}", registeredUser);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "회원가입이 완료되었습니다.");
+            response.put("message", "　회원가입이 완료되었습니다.");
             response.put("coupon", "💕신규쿠폰이 발급되었습니다💕");
             return ResponseEntity.ok(response);
-        } catch (BusinessException e) {
-            throw e;
+
+        } catch (DuplicateLoginIdException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "field", "loginId",
+                    "message", e.getMessage()
+            ));
+        } catch (DuplicatePhoneNumberException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "field", "phoneNumber",
+                    "message", e.getMessage()
+            ));
+
+        } catch (DuplicateEmailException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "field", "email",
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            throw new RuntimeException("회원가입 처리중 오류가 발생 하였습니다");
+            log.error("회원가입 오류 입니다.", e);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "회원가입 처리중 오류가 발생하였습니다."
+            ));
         }
     }
-
 
 
     @PostMapping("/login")
@@ -102,21 +129,6 @@ public class UserController {
 
             log.info("로그인 성공 로그인아이디: {}, JWT 생성 및 발급 완료", userDetails.getUser().getLoginId());
 
-            // 기존 코드 주석 처리함 by 병국
-            //Cookie accesscookie = new Cookie("accessToken", accessToken); // 해당 정보를 가진 쿠키를 생성
-            //accesscookie.setHttpOnly(true); // JavaScript 접근 불가
-            //accesscookie.setSecure(false); // HTTPS true/false로 설정
-            //accesscookie.setPath("/"); // 모든경로
-            //accesscookie.setMaxAge(60 * 30); // 30분 설정 만료일 설정
-            //httpServletResponse.addCookie(accesscookie); // 해당 repsonse에 쿠키를 추가
-
-            //Cookie refreshcookie = new Cookie("refreshToken", refreshToken); // 해당 정보를 가진 쿠키 생성
-            //refreshcookie.setHttpOnly(true); // JavaScript 접근 불가
-            //refreshcookie.setSecure(false); // HTTPS true/false로 설정
-            //refreshcookie.setPath("/"); // 모든경로
-            //refreshcookie.setMaxAge(60 * 60 * 24); // 1일 설정 만료일 설정
-            //httpServletResponse.addCookie(refreshcookie); // 해당 response에 쿠키를 추가
-
             // 쿠키 설정 (ResponseCookie 사용)
             setTokenCookies(httpServletResponse, accessToken, refreshToken);
 
@@ -130,6 +142,8 @@ public class UserController {
                     LocalDateTime.now()
             ));
 
+            int activePoint = pointHistoryService.getActivePoint(userDetails.getUser().getId());
+
 //         응답 로직
             Map<String, Object> LoginResponse = new HashMap<>();
             LoginResponse.put("success", true);
@@ -139,6 +153,8 @@ public class UserController {
                     .loginId(userDetails.getUsername())
                     .name(userDetails.getUser().getName())
                     .userRole(userDetails.getUser().getUserRole())
+                    .userGrade(userDetails.getUser().getUserGrade())
+                    .activePoint(activePoint)
                     .build());
             return ResponseEntity.ok(LoginResponse);
 
@@ -211,19 +227,6 @@ public class UserController {
 
             // 새 토큰을 쿠키에 설정
             setTokenCookies(response, newAccessToken, newRefreshToken);
-//            Cookie newAccessCookie = new Cookie("accessToken", newAccessToken);
-//            newAccessCookie.setHttpOnly(true);
-//            newAccessCookie.setSecure(false);
-//            newAccessCookie.setPath("/");
-//            newAccessCookie.setMaxAge(60 * 30); // 30분
-//            response.addCookie(newAccessCookie);
-//
-//            Cookie newRefreshCookie = new Cookie("refreshToken", newRefreshToken);
-//            newRefreshCookie.setHttpOnly(true);
-//            newRefreshCookie.setSecure(false);
-//            newRefreshCookie.setPath("/");
-//            newRefreshCookie.setMaxAge(60 * 60 * 24 ); // 1일
-//            response.addCookie(newRefreshCookie);
 
             // 응답
             Map<String, Object> result = new HashMap<>();
@@ -238,7 +241,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','MANAGER','ADMIN')")
     @PostMapping("/logout")
     public ResponseEntity<?> logout (HttpServletResponse httpServletResponse) {
 
@@ -264,6 +267,7 @@ public class UserController {
 
 
 
+    @PreAuthorize("hasAnyRole('USER','MANAGER','ADMIN')")
     @GetMapping("/currentUser")
     public ResponseEntity<Map<String, Object>> currentUser () {
 
@@ -280,6 +284,8 @@ public class UserController {
         log.info("여기는 로그인된 사용자정보 불러오기 : {}", userDetails.getUsername());
         log.info("여기는 로그인된 사용자정보 불러오기 : {}", userDetails.getUser().getId());
 
+        int activePoint = pointHistoryService.getActivePoint(userDetails.getUser().getId());
+
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("user", UserLoginResponse.builder()
@@ -287,6 +293,8 @@ public class UserController {
                 .loginId(userDetails.getUser().getLoginId())
                 .name(userDetails.getUser().getName())
                 .userRole(userDetails.getUser().getUserRole())
+                .userGrade(userDetails.getUser().getUserGrade())
+                .activePoint(activePoint)
                 .build());
         log.info("여기는 로그인된 사용자정보 반환: {}",response);
 
@@ -305,9 +313,8 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-
     // @RequestParam 방식은 쿼리파라미터를 보내는 방식으로 REST API 원칙과는 다른방식
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','MANAGER','ADMIN')")
     @GetMapping("/profile/{loginId}")
     public ResponseEntity<UserProfileResponse> getUserProfile (@PathVariable String loginId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -316,7 +323,7 @@ public class UserController {
         return ResponseEntity.ok(profileResponse);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','MANAGER','ADMIN')")
     @PutMapping("/profile-modify")
     public ResponseEntity<UserModifyResponse> modifyUserProfile (@RequestBody UserModifyRequest userModifyRequest) {
         UserModifyResponse response = userService.modifyUserProfile(userModifyRequest);
@@ -327,7 +334,7 @@ public class UserController {
         }
 
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','MANAGER','ADMIN')")
     @PatchMapping("/password-change")
     public ResponseEntity<PasswordChangeResponse> changeUserPassword (@RequestBody PasswordChangeRequest request) {
         PasswordChangeResponse response = userService.changeUserPassword(request);
@@ -340,7 +347,7 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','MANAGER','ADMIN')")
     @PostMapping("/withdraw")
     public ResponseEntity<UserWithdrawalResponse> withdrawUser (@RequestBody UserWithdrawalRequest request) {
         UserWithdrawalResponse response = userWithdrawalService.withdrawUser(request);

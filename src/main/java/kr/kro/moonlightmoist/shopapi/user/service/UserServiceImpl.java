@@ -26,6 +26,14 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateLoginIdException();
         }
 
+        if(userRepository.existsByPhoneNumber((userSignUpRequest.getPhoneNumber()))){
+            throw new DuplicatePhoneNumberException();
+        }
+
+        if(userRepository.existsByEmail(userSignUpRequest.getEmail())){
+            throw new DuplicateEmailException();
+        }
+
         String encodePassword = passwordEncoder.encode(userSignUpRequest.getPassword());
 
         log.info("PasswordEncoding 출력 : {} ", encodePassword);
