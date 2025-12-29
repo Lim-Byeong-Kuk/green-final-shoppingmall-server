@@ -9,6 +9,9 @@ import jakarta.annotation.PostConstruct;
 import kr.kro.moonlightmoist.shopapi.order.domain.Order;
 import kr.kro.moonlightmoist.shopapi.order.repository.OrderRepository;
 import kr.kro.moonlightmoist.shopapi.order.service.OrderService;
+import kr.kro.moonlightmoist.shopapi.pointHistory.domain.PointHistory;
+import kr.kro.moonlightmoist.shopapi.pointHistory.domain.PointStatus;
+import kr.kro.moonlightmoist.shopapi.pointHistory.repository.PointHistoryRepository;
 import kr.kro.moonlightmoist.shopapi.pointHistory.service.PointHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
     private IamportClient iamportClient;
 
     private final OrderRepository orderRepository;
+    private final PointHistoryRepository pointHistoryRepository;
 
     private final OrderService orderService;
     private final PointHistoryService pointHistoryService;
@@ -123,7 +127,12 @@ public class PaymentServiceImpl implements PaymentService {
                 // 주문 삭제(쿠폰 복구, 주문 쿠폰, 주문, 주문 상품 삭제, 재고 수량 다시 증가)
                 orderService.deleteOneOrder(order.getId());
                 // 포인트 롤백
-                pointHistoryService.rollbackPoint(order.getId());
+                for(PointHistory pointHistory : pointHistoryRepository.findByOrderId(order.getId())){
+                    if((pointHistory.getPointStatus() == PointStatus.USED) && (pointHistory.getPointValue() < 0)) {
+                        pointHistoryService.rollbackPoint(order.getId());
+                    }
+                }
+
             } else {
                 throw new IllegalStateException("PG사 환불 실패: " + response.getMessage());
             }

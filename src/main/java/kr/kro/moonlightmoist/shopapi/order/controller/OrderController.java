@@ -3,6 +3,9 @@ package kr.kro.moonlightmoist.shopapi.order.controller;
 import kr.kro.moonlightmoist.shopapi.order.dto.*;
 import kr.kro.moonlightmoist.shopapi.order.service.OrderCouponService;
 import kr.kro.moonlightmoist.shopapi.order.service.OrderService;
+import kr.kro.moonlightmoist.shopapi.pointHistory.domain.PointHistory;
+import kr.kro.moonlightmoist.shopapi.pointHistory.domain.PointStatus;
+import kr.kro.moonlightmoist.shopapi.pointHistory.repository.PointHistoryRepository;
 import kr.kro.moonlightmoist.shopapi.pointHistory.service.PointHistoryService;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
@@ -21,6 +24,8 @@ import java.util.Map;
 @RequestMapping("/api/order")
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class OrderController {
+    private final PointHistoryRepository pointHistoryRepository;
+
     private final OrderService orderService;
     private final OrderCouponService orderCouponService;
     private final PointHistoryService pointHistoryService;
@@ -30,8 +35,9 @@ public class OrderController {
         log.info("registerOrder 메서드 실행 dto :{}", orderRequestDTO);
         Long orderId = orderService.createOrder(orderRequestDTO, userId);
         // 사용한 포인트 차감
-        pointHistoryService.usePoint(userId, orderId, orderRequestDTO.getUsedPoints());
-
+        if(orderRequestDTO.getUsedPoints() != 0) {
+            pointHistoryService.usePoint(userId, orderId, orderRequestDTO.getUsedPoints());
+        }
         return ResponseEntity.ok(orderId);
     }
 
@@ -60,7 +66,11 @@ public class OrderController {
         log.info("deleteOneOrder 메서드 실행 orderId:{}", orderId);
         orderService.deleteOneOrder(orderId); // 주문 삭제(주문 상품 삭제, 주문 쿠폰 삭제, 유저 쿠폰 회복, 주문 삭제)
 
-        pointHistoryService.rollbackPoint(orderId); // 포인트 롤백
+        for(PointHistory pointHistory : pointHistoryRepository.findByOrderId(orderId)){
+            if(pointHistory.getPointStatus() == PointStatus.USED && pointHistory.getPointValue() < 0) {
+                pointHistoryService.rollbackPoint(orderId); // 포인트 롤백
+            }
+        }
         return ResponseEntity.ok("삭제 성공");
     }
 
