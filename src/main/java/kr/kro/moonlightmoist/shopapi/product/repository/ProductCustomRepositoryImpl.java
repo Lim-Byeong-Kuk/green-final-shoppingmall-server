@@ -46,7 +46,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository{
                         dateFilter(
                                 condition.getStartDate() != null ? condition.getStartDate().atStartOfDay() : null,
                                 condition.getEndDate() != null ? condition.getEndDate().atTime(LocalTime.MAX) : null
-                        )
+                        ),
+                        product.deleted.isFalse()
                 )
                 .fetch();
 
@@ -71,7 +72,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository{
                         dateFilter(
                                 condition.getStartDate() != null ? condition.getStartDate().atStartOfDay() : null,
                                 condition.getEndDate() != null ? condition.getEndDate().atTime(LocalTime.MAX) : null
-                        )
+                        ),
+                        product.deleted.isFalse()
                 );
 
         // 페이징 처리
@@ -98,7 +100,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository{
                         dateFilter(
                                 condition.getStartDate() != null ? condition.getStartDate().atStartOfDay() : null,
                                 condition.getEndDate() != null ? condition.getEndDate().atTime(LocalTime.MAX) : null
-                        )
+                        ),
+                        product.deleted.isFalse()
                 );
 
         // Page 객체로 변환

@@ -56,8 +56,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>
     List<Brand> findBrandListByCategoryIds(@Param("categoryIds") List<Long> categoryIds);
 
     // SaleInfo의 totalSalesCount를 기준으로 내림차순(Desc) 정렬하여 상위 8개 조회
-    List<Product> findTop8ByOrderBySaleInfoTotalSalesCountDesc();
+    List<Product> findTop8ByDeletedFalseOrderBySaleInfoTotalSalesCountDesc();
 
     // createdAt을 기준으로 내림차순 정렬하여 상위 8개 조회
-    List<Product> findTop8ByOrderByCreatedAtDesc();
+    List<Product> findTop8ByDeletedFalseOrderByCreatedAtDesc();
 }

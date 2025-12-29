@@ -8,6 +8,7 @@ import kr.kro.moonlightmoist.shopapi.review.dto.PageRequestDTO;
 import kr.kro.moonlightmoist.shopapi.review.dto.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -180,5 +181,11 @@ public class ProductController {
     public ResponseEntity<List<ProductResForList>> getBestProducts() {
         List<ProductResForList> result = productService.getBestProducts();
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok("ok");
     }
 }

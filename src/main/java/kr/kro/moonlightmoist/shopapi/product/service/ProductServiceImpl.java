@@ -255,14 +255,21 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ProductResForList> getNewProducts() {
-        return productRepository.findTop8ByOrderByCreatedAtDesc()
+        return productRepository.findTop8ByDeletedFalseOrderByCreatedAtDesc()
                 .stream().map(p -> p.toDTOForList()).toList();
     }
 
     @Override
     public List<ProductResForList> getBestProducts() {
-        return productRepository.findTop8ByOrderBySaleInfoTotalSalesCountDesc()
+        return productRepository.findTop8ByDeletedFalseOrderBySaleInfoTotalSalesCountDesc()
                 .stream().map(p -> p.toDTOForList()).toList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        product.deleteProduct();
     }
 
 }

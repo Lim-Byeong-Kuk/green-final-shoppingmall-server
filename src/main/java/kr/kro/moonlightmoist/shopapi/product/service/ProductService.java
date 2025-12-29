@@ -28,4 +28,5 @@ public interface ProductService {
     // 베스트 상품(판매순) 8개 조회
     List<ProductResForList> getBestProducts();
     // 상품 삭제
+    void deleteProduct(Long id);
 }
