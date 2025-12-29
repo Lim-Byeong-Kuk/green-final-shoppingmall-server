@@ -270,22 +270,44 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Double getAvgRating(Long productId) {
-        return reviewRepository.reviewAvgRating(productId);
+        try {
+            Double avgRating = reviewRepository.reviewAvgRating(productId);
+            //null 체크
+            return avgRating != null ? avgRating : 0.0;
+        } catch (Exception e) {
+            log.info("평균 평점 조회 실패 - productId: {}", productId, e);
+            return 0.0;
+        }
     }
 
     @Override
     public int getReviewTotalCount(Long productId) {
-        return reviewRepository.reviewTotalCount(productId);
+        try {
+            return reviewRepository.reviewTotalCount(productId);
+        } catch (Exception e) {
+            log.warn("리뷰 개수 조회 실패 - productId: {}", productId, e);
+            return 0;
+        }
     }
 
     @Override
     public int getRatingByCount(Long productId, Integer rating) {
-        return reviewRepository.ratingByCount(productId, rating);
+        try {
+            return reviewRepository.ratingByCount(productId, rating);
+        } catch (Exception e) {
+            log.warn("별점별 개수 조회 실패 - productId: {}, rating: {}", productId, rating, e);
+            return 0;
+        }
     }
 
     @Override
     public int getPositiveReview(Long productId) {
-        return reviewRepository.positiveReview(productId);
+        try {
+            return reviewRepository.positiveReview(productId);
+        } catch (Exception e) {
+            log.warn("긍정 리뷰 개수 조회 실패 - productId: {}", productId, e);
+            return 0;
+        }
     }
 
 }
