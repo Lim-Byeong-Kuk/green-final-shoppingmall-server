@@ -24,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void sendFindIdCode(String email) {
+        // 이메일로 가입된 사용자가 있는지 확인
         if (!userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("해당 이메일로 가입된 정보가 없습니다.");
         }
@@ -31,11 +32,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // 조회만 하므로 읽기 전용 트랜잭션설정
     public String verifyFindId(String email, String code) {
+        // 인증 코드 검증
         if (!emailService.verifyCode(email, code)) {
             throw new IllegalArgumentException("인증번호가 틀렸습니다.");
         }
+        // 이메일로 사용자를 찾아 로그인 ID 반환
         return userRepository.findByEmail(email)
                 .map(User::getLoginId)
                 .orElseThrow(() -> new UserNotFoundException());
@@ -47,12 +50,14 @@ public class AuthServiceImpl implements AuthService {
         log.info("받은 email: [{}]", email);
         log.info("userId 길이: {}", userId != null ? userId.length() : "null");
         log.info("email 길이: {}", email != null ? email.length() : "null");
-// 공백 확인
+
         if (userId != null) {
+            // userId에 공백이 포함되어 있는지 확인
             log.info("userId에 공백 포함: {}", userId.contains(" "));
             log.info("trim 전후 비교: [{}] vs [{}]", userId, userId.trim());
         }
 
+        // DB에 로그인 ID와 이메일이 모두 일치하는 사용자가 있는지 확인
         boolean exists = userRepository.existsByLoginIdAndEmail(userId, email);
         log.info("DB 조회 결과: {}", exists);
 
@@ -65,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
                         user.getLoginId(), user.getEmail());
             });
 
-            throw new UserNotFoundException("입력하신 정보와 일치하는 회원이 없습니다.");
+            throw new UserNotFoundException("입력하신 이메일이 일치하는 회원이 없습니다.");
         }
 
         emailService.sendVerificationEmail(email);

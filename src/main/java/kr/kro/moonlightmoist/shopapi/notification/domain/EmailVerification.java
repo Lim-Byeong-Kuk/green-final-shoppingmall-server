@@ -1,16 +1,15 @@
-package kr.kro.moonlightmoist.shopapi.notification.domail;
+package kr.kro.moonlightmoist.shopapi.notification.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "email_verification")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailVerification {
 
@@ -25,22 +24,16 @@ public class EmailVerification {
     private String code;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
+    @Builder.Default
+    private LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(5);
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean verified = false;
-
-    @Builder
-    public EmailVerification(String email, String code) {
-        this.email = email;
-        this.code = code;
-        this.createdAt = LocalDateTime.now();
-        this.expiresAt = LocalDateTime.now().plusMinutes(5); // 5분 후 만료
-        this.verified = false;
-    }
 
     // 인증 완료 처리
     public void verify() {
