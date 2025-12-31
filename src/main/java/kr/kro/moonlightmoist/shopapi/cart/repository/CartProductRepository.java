@@ -26,7 +26,7 @@ public interface CartProductRepository extends JpaRepository<CartProduct,Long> {
             c.id, po.id, pp.brand.name, pp.basicInfo.productName, po.optionName, po.sellingPrice, c.quantity,
             (select pi.imageUrl from Product p join p.mainImages pi where p.id = pp.id
             and pi.imageType = kr.kro.moonlightmoist.shopapi.product.domain.ImageType.THUMBNAIL 
-            and pi.displayOrder = 0), pp.deliveryPolicy
+            and pi.displayOrder = 0), pp.deliveryPolicy, po.currentStock
             )
             from CartProduct c
             join c.cart cc
