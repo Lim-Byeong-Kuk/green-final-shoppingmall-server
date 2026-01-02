@@ -49,4 +49,11 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
 
     // 주문 id 로 히스토리 찾기
     List<PointHistory> findByOrderId(Long orderId);
+
+    // 누적 포인트 조회
+    @Query("SELECT COALESCE(SUM(p.pointValue),0) FROM PointHistory p " +
+            "WHERE p.user.id = :userId " +
+            "AND p.pointStatus = 'EARNED' " +
+            "AND p.deleted = false")
+    int sumEarnedPointsByUserId(@Param("userId") Long userId);
 }

@@ -9,6 +9,7 @@ import kr.kro.moonlightmoist.shopapi.pointHistory.domain.PointUsageDetail;
 import kr.kro.moonlightmoist.shopapi.pointHistory.repository.PointHistoryRepository;
 import kr.kro.moonlightmoist.shopapi.pointHistory.repository.PointUsageDetailRepository;
 import kr.kro.moonlightmoist.shopapi.user.domain.User;
+import kr.kro.moonlightmoist.shopapi.user.domain.UserGrade;
 import kr.kro.moonlightmoist.shopapi.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -152,5 +153,23 @@ public class PointHistoryServiceImpl implements PointHistoryService{
                 .build();
 
         return pointHistoryRepository.save(cancelledHistory).getId();
+    }
+
+    @Override
+    @Transactional
+    public void checkAndUpgradeUserGrade(Long userId) {
+
+        int accumulatedPoints = pointHistoryRepository.sumEarnedPointsByUserId(userId);
+
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        UserGrade currentGrade = user.getUserGrade();
+        UserGrade newGrade = UserGrade.calculateGrade(accumulatedPoints);
+
+        if (!currentGrade.equals(newGrade)) {
+            user.updateUserGrade(newGrade);
+
+            // 알림 전송 로직
+            // TODO : 웹소켓 이용하여 알림 기능 구현해볼것
+        }
     }
 }
