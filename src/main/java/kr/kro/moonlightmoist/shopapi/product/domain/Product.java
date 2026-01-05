@@ -48,7 +48,7 @@ public class Product extends BaseTimeEntity {
     @JoinColumn(name = "delivery_policy_id")
     private DeliveryPolicy deliveryPolicy;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_detail_info_id")
     private DetailInfo detailInfo;
 
