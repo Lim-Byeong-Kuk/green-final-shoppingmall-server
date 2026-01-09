@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long> {
-    // 'EARNED' 와 'CANCELLED' 는 사용가능한 포인트
+
     @Query("SELECT p FROM PointHistory p " +
             "WHERE p.user.id = :userId " +
-            "AND p.pointStatus IN ('EARNED','CANCELLED') " +
+            "AND p.pointStatus = 'EARNED' " +
             "AND p.remainingPoint > 0 " +
             "AND p.expiredAt > :now " +
             "ORDER BY p.expiredAt ASC"
@@ -30,9 +30,9 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
     )
     Long findCumulativePoints(@Param("userId") Long userId);
 
-    // 만료 대상 조회 : pointStatus 가 'EARNED', 'CANCELLED' 이지만 만료기간이 지난 포인트히스토리 조회
+    // 만료 대상 조회 : pointStatus 가 'EARNED' 이지만 만료기간이 지난 포인트히스토리 조회
     @Query("SELECT p FROM PointHistory p " +
-            "WHERE p.pointStatus IN ('EARNED', 'CANCELLED') " +
+            "WHERE p.pointStatus = 'EARNED' " +
             "AND p.expiredAt <= :now " +
             "AND p.deleted = false"
     )
@@ -42,7 +42,7 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
     @Modifying
     @Query("UPDATE PointHistory p " +
             "SET p.pointStatus = 'EXPIRED' " +
-            "WHERE p.pointStatus IN ('EARNED', 'CANCELLED') " +
+            "WHERE p.pointStatus = 'EARNED' " +
             "AND p.expiredAt < :now " +
             "AND p.deleted = false")
     int updatePointStatusToExpired(@Param("now") LocalDateTime now);
