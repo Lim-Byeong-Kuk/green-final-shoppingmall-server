@@ -151,7 +151,8 @@ public class PointHistoryServiceImpl implements PointHistoryService{
                 .order(order)
                 .pointStatus(PointStatus.CANCELLED)
                 .pointValue(order.getUsedPoints())
-                .remainingPoint(0)
+                .remainingPoint(order.getUsedPoints())
+                .expiredAt(LocalDateTime.now().plusYears(1))
                 .build();
 
         return pointHistoryRepository.save(cancelledHistory).getId();
