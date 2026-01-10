@@ -103,6 +103,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponseDTO<ProductResForList> searchProductsByCategory(List<Long> depth3CategoryIds,Long brandId, PageRequestDTO pageRequest) {
 
         Pageable pageable = null;
@@ -164,6 +165,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductResForDetail searchProductById(Long id) {
         Product product = productRepository.findById(id).get();
         ProductResForDetail dto = product.toDTOForDetail();
@@ -254,12 +256,14 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductResForList> getNewProducts() {
         return productRepository.findTop8ByDeletedFalseOrderByCreatedAtDesc()
                 .stream().map(p -> p.toDTOForList()).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductResForList> getBestProducts() {
         return productRepository.findTop8ByDeletedFalseOrderBySaleInfoTotalSalesCountDesc()
                 .stream().map(p -> p.toDTOForList()).toList();
