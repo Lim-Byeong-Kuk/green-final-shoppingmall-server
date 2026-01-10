@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -132,10 +133,13 @@ public class ProductController {
             @RequestParam("brandId") Long brandId,
             @ModelAttribute PageRequestDTO pageRequest
             ) {
-
-        System.out.println("brandId = " + brandId);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Product Search"); // 측정 시작
 
         PageResponseDTO<ProductResForList> pageResponse = productService.searchProductsByCategory(depth3CategoryIds, brandId, pageRequest);
+
+        stopWatch.stop(); // 측정 종료
+        log.info(stopWatch.prettyPrint()); // 결과 출력 (총 시간 및 상세 내역)
         return ResponseEntity.ok(pageResponse);
     }
 
