@@ -44,7 +44,7 @@ public class Product extends BaseTimeEntity {
     @Builder.Default
     private boolean deleted = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "delivery_policy_id")
     private DeliveryPolicy deliveryPolicy;
 
@@ -109,7 +109,7 @@ public class Product extends BaseTimeEntity {
                 .basicInfo(this.basicInfo.toDTO())
                 .saleInfo(this.saleInfo.toDTO())
                 .brand(this.brand.toDTO())
-                .category(this.category.toCategoryResForList())
+//                .category(this.category.toCategoryResForList())
                 .deliveryPolicy(this.deliveryPolicy.toDTO())
                 .mainImages(this.mainImages.stream().map(image -> image.toDTO()).toList())
                 .options(this.getProductOptions().stream().map(option -> option.toDTO()).toList())

@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 public class ProductResForList {
     private Long id;
-    private CategoryResForList category;
+//    private CategoryResForList category;
     private BrandDTO brand;
     private BasicInfoDTO basicInfo;
     private SaleInfoDTO saleInfo;
