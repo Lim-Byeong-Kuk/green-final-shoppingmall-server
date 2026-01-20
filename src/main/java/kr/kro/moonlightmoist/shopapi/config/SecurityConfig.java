@@ -69,12 +69,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173",
-                "http://green-final-shoppingmall-react-ikg8.vercel.app",
-                "https://green-final-shoppingmall-react-ikg8.vercel.app",
-                "http://green-final-shoppingmall-react.vercel.app",
-                "https://green-final-shoppingmall-react.vercel.app",
                 "http://moisture-village.kro.kr",
-                "https://moisture-village.kro.kr"
+                "https://moisture-village.kro.kr",
+                "http://moisture-village.store",
+                "https://moisture-village.store"
                 ));
 //        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         configuration.setAllowedHeaders(List.of("*")); // 수정 BY 병국
