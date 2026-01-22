@@ -14,7 +14,8 @@ public interface RestockNotificationRepository extends JpaRepository<RestockNoti
 
     @Query("SELECT n FROM RestockNotification n " +
             "WHERE n.productOption.id = :optionId " +
-            "AND n.notificationStatus = 'WAITING'")
+            "AND n.notificationStatus = 'WAITING' " +
+            "AND n.deleted = false")
     List<RestockNotification> findByOptionIdAndWaiting(@Param("optionId") Long optionId);
 
     Optional<RestockNotification> findByUserIdAndProductOptionId(Long userId, Long optionId);
