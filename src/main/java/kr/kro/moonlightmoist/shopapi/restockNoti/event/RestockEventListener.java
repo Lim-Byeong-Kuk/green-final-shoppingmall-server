@@ -7,6 +7,7 @@ import kr.kro.moonlightmoist.shopapi.product.repository.ProductOptionRepository;
 import kr.kro.moonlightmoist.shopapi.restockNoti.domain.NotificationStatus;
 import kr.kro.moonlightmoist.shopapi.restockNoti.domain.RestockNotification;
 import kr.kro.moonlightmoist.shopapi.restockNoti.repository.RestockNotificationRepository;
+import kr.kro.moonlightmoist.shopapi.restockNoti.service.RestockNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 public class RestockEventListener {
     private final ProductOptionRepository productOptionRepository;
     private final RestockNotificationRepository restockNotificationRepository;
+    private final RestockNotificationService restockNotificationService;
     private final NotificationService notificationService;
 
     @EventListener
@@ -32,20 +34,25 @@ public class RestockEventListener {
     public void handleRestockEvent(RestockEvent event) {
         try {
             // 재입고 공지 테이블에서 찾기
-            List<RestockNotification> notis = restockNotificationRepository.findByOptionIdAndWaiting(event.getOptionId());
-            ProductOption option = productOptionRepository.findById(event.getOptionId())
-                    .orElseThrow(() -> new EntityNotFoundException());
+            List<Long> notiIds = restockNotificationRepository
+                    .findByOptionIdAndWaiting(event.getOptionId())
+                    .stream()
+                    .map(RestockNotification::getId)
+                    .toList();
 
-            for (RestockNotification noti : notis) {
-                processNotification(noti, option);
+            ProductOption option = productOptionRepository.findById(event.getOptionId())
+                    .orElseThrow(EntityNotFoundException::new);
+
+            for (Long notiId : notiIds) {
+                processNotification(notiId, option);
             }
 
         } catch (Exception e) {
-            log.error("재입고 알림 발송 실패 : optionId={}", event.getOptionId());
+            log.error("재입고 알림 발송 실패 : optionId={}", event.getOptionId(), e);
         }
     }
 
-    private void processNotification(RestockNotification noti, ProductOption option) {
+    private void processNotification(Long notiId, ProductOption option) {
         // 메시지 생성 로직 및 발송 로직
         String message = String.format(
                 "달빛나라 촉촉마을 상품 재입고 알림!\n" +
@@ -56,19 +63,24 @@ public class RestockEventListener {
 
         CompletableFuture.runAsync(() -> {
            try {
-               notificationService.sendSmsMessage(noti.getUser().getPhoneNumber(), message);
-               // 성공
-               noti.changeStatus(NotificationStatus.SENT);
-               // 성공 로그 저장
+               RestockNotification noti = restockNotificationRepository
+                       .findById(notiId)
+                       .orElseThrow(EntityNotFoundException::new);
 
+               // 메시지 전송 막아 놓음
+//               notificationService.sendSmsMessage(noti.getUser().getPhoneNumber(), message);
+               // 성공 내역 저장 - 별도 트랜잭션에서 상태 업데이트
+               restockNotificationService.updateNotificationStatus(notiId, true);
+               // 성공 로그 저장
            } catch (Exception e) {
-               // 발송 실패시 로그 저장
+               // 발송 실패시
                log.info("발송 실패 : {}", e.getMessage());
+               // 실패 내역 저장
+               restockNotificationService.updateNotificationStatus(notiId, false);
            }
         }
         // 사용자 정의 asyncExecutor
 //        , asyncExecutor
         );
-
     }
 }

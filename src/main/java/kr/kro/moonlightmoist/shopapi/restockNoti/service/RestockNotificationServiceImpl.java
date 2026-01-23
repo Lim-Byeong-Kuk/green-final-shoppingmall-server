@@ -30,34 +30,43 @@ public class RestockNotificationServiceImpl implements RestockNotificationServic
     private final ProductOptionRepository productOptionRepository;
 
     @Override
+    @Transactional
     public Long applyRestockNotification(Long userId, Long optionId) {
 
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         ProductOption option = productOptionRepository.findById(optionId).orElseThrow(EntityNotFoundException::new);
+        Optional<RestockNotification> optionalNoti = restockNotificationRepository.findByUserIdAndProductOptionId(userId, optionId);
+        if (optionalNoti.isPresent()) {
+            RestockNotification restockNoti = optionalNoti.get();
 
-        if (restockNotificationRepository.findByUserIdAndProductOptionId(userId, optionId).isPresent()) {
-            return Long.valueOf(0);
+            if(restockNoti.getNotificationStatus() == NotificationStatus.WAITING) {
+                log.info("이미 재입고 신청 후 대기 중");
+                return Long.valueOf(0);
+            } else { // 취소했다가 다시 신청한 경우
+                log.info("재입고 취소 후 다시 신청");
+                restockNoti.rollBack();
+                return restockNoti.getId();
+            }
+        } else { // 처음 신청한 경우
+            log.info("재입고 처음 신청");
+            RestockNotification restockNotification = RestockNotification.builder()
+                    .user(user)
+                    .productOption(option)
+                    .notificationType(NotificationType.SMS)
+                    .notificationStatus(NotificationStatus.WAITING)
+                    .build();
+
+            return restockNotificationRepository.save(restockNotification).getId();
         }
-
-
-        RestockNotification restockNotification = RestockNotification.builder()
-                .user(user)
-                .productOption(option)
-                .notificationType(NotificationType.SMS)
-                .notificationStatus(NotificationStatus.WAITING)
-                .build();
-
-        return restockNotificationRepository.save(restockNotification).getId();
     }
 
     @Override
     @Transactional
     public Long cancelRestockNotification(Long userId, Long optionId) {
         RestockNotification noti = restockNotificationRepository.findByUserIdAndProductOptionId(userId, optionId).orElseThrow(EntityNotFoundException::new);
-        Long deletedId = noti.getId();
-        restockNotificationRepository.deleteById(noti.getId());
+        noti.softDelete();
 
-        return deletedId;
+        return noti.getId();
     }
 
     @Override
@@ -77,6 +86,20 @@ public class RestockNotificationServiceImpl implements RestockNotificationServic
         return RestockNotiRes.builder()
                 .optionNotiStatus(optionStatusMap)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void updateNotificationStatus(Long notiId, boolean success) {
+        RestockNotification noti = restockNotificationRepository
+                .findById(notiId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        if (success) {
+            noti.successSent();
+        } else {
+            noti.failSent();
+        }
     }
 
 }

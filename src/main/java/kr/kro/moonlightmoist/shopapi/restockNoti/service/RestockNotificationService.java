@@ -8,4 +8,5 @@ public interface RestockNotificationService {
     Long applyRestockNotification(Long userId, Long optionId);
     Long cancelRestockNotification(Long userId, Long optionId);
     RestockNotiRes getRestockNotiStatus(Long userId, List<Long> optionIds);
+    void updateNotificationStatus(Long notiId, boolean success);
 }

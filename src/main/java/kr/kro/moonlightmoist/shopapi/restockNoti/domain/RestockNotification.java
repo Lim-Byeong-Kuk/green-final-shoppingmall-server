@@ -47,10 +47,26 @@ public class RestockNotification extends BaseTimeEntity {
     private LocalDateTime notifiedAt;
 
     @Column(name = "is_deleted")
-    private boolean deleted;
+    @Builder.Default
+    private boolean deleted = false;
 
-    public void changeStatus (NotificationStatus status) {
-        this.notificationStatus = status;
+    public void successSent () {
+        this.notificationStatus = NotificationStatus.SENT;
+        this.notifiedAt = LocalDateTime.now();
+    }
+
+    public void failSent() {
+        this.notificationStatus = NotificationStatus.FAILED;
+    }
+
+    public void softDelete() {
+        this.deleted = true;
+        this.notificationStatus = NotificationStatus.CANCELLED;
+    }
+
+    public void rollBack() {
+        this.deleted = false;
+        this.notificationStatus = NotificationStatus.WAITING;
     }
 
 }
